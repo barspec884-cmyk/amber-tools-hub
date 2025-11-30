@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Speyside Distilleries</title>
+<style>
+:root{
+  --bg:#0d0c0b;
+  --panel:#181614;
+  --ink:#f6f1e9;
+  --muted:#b9b2a6;
+  --accent:#c7a97a;
+  --chip:#262320;
+  --border:#332e2a;
+}
+html,body{
+  background:radial-gradient(circle at 40% 15%, #1a1715 0%, #0d0c0b 85%);
+  color:var(--ink); margin:0;
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+}
+.wrap{max-width:1100px; margin:24px auto; padding:0 16px;}
+header{margin-bottom:18px}
+h1{font-size:28px; font-weight:800; letter-spacing:.02em; margin:0 0 8px}
+.subtitle{color:var(--muted); margin:0 0 18px; line-height:1.6}
+.controls{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin:0 0 20px}
+.search{flex:1; min-width:240px}
+input[type="search"]{
+  width:100%; padding:12px 14px; background:#12100f; color:var(--ink);
+  border:1px solid var(--border); border-radius:10px; font-size:15px; outline:none;
+}
+.district{margin:30px 0}
+.district>h2{
+  font-size:20px; font-weight:800; color:var(--accent);
+  margin:0 0 10px; letter-spacing:.02em; border-bottom:1px solid rgba(199,169,122,.25); padding-bottom:4px;
+}
+.grid{display:grid; grid-template-columns:repeat(1,minmax(0,1fr)); gap:14px}
+@media (min-width:580px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (min-width:940px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+.card{
+  background:radial-gradient(circle at 30% 20%, #1d1b19 0%, #141210 90%);
+  border:1px solid rgba(90,80,65,.35);
+  border-radius:16px; padding:16px;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.45), 0 2px 5px rgba(0,0,0,.4);
+  transition:transform .15s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.card:hover{
+  transform:translateY(-3px);
+  border-color:rgba(200,180,120,.4);
+  box-shadow:inset 0 0 12px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.45), 0 0 8px rgba(210,180,120,.15);
+}
+.names{display:flex; flex-wrap:wrap; gap:8px 10px; align-items:baseline; margin-bottom:8px}
+.jp{font-weight:700; font-size:16px}
+.en{font-size:13px; color:var(--muted)}
+.meaning{margin:8px 0 6px; line-height:1.6}
+.meaning-jp{font-size:14.5px; color:#f5f2ec}
+.meaning-en{font-size:13px; color:#c3b693; font-style:italic; margin-top:2px}
+.meta{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
+.chip{font-size:11px; color:var(--muted); background:var(--chip); border:1px solid var(--border); padding:4px 8px; border-radius:999px}
+footer{color:var(--muted); font-size:12px; margin:28px 0 40px; line-height:1.6; border-top:1px solid rgba(255,255,255,.05); padding-top:10px}
+
+/* 戻るボタン */
+.back-to-index {
+  display:inline-block;
+  position:fixed;
+  top:16px;
+  left:16px;
+  z-index:999;
+  background:#181614;
+  color:#c7a97a;
+  border:1px solid rgba(199,169,122,.4);
+  border-radius:10px;
+  padding:8px 14px;
+  font-weight:700;
+  text-decoration:none;
+  transition:all .25s ease;
+  box-shadow:0 2px 6px rgba(0,0,0,.4);
+}
+.back-to-index:hover {
+  background:#1f1c18;
+  color:#fff4e0;
+  transform:translateY(-2px);
+}
+@media (max-width:600px){
+  .back-to-index{
+    top:10px;
+    left:10px;
+    font-size:15px;
+    padding:10px 18px;
+  }
+}
+/* ─── 統一戻るボタン（Amber Palette 標準） ─── */
+.nav-links{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin:18px 0 22px;
+}
+
+.nav-links .back{
+  display:inline-block;
+  width:fit-content;
+  padding:8px 14px;
+  font-size:14px;
+  color:var(--accent);
+  text-decoration:none;
+  background:#1a1613;
+  border:1px solid var(--border);
+  border-radius:8px;
+  box-shadow:0 3px 6px rgba(0,0,0,.35);
+  transition:all .2s ease;
+}
+
+.nav-links .back:hover{
+  background:#2a241f;
+  border-color:var(--accent);
+  box-shadow:0 4px 12px rgba(215,178,116,.25);
+  transform:translateY(-1px);
+}
+.extra a {
+  color: #d7b274; /* Amber */
+  font-size: 13.5px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(215,178,116,0.35);
+  padding-bottom: 1px;
+  display: inline-block;
+}
+.extra a:hover {
+  opacity: 0.8;
+}
+	
+	
+</style>
+</head>
+<body>
+
+<div class="wrap">
+	
+<div class="nav-links">
+  <a href="scotch-index.html" class="back">← Socatch Index </a>
+</div>
+
+	
+	
+	
+<header>
+  <h1>スペイサイド［Speyside］</h1>
+  <p class="subtitle">各カードに <strong>日本語名／英語名／意味（日本語＋英語）</strong> を併記。検索は日本語・英語・意味語のいずれでもヒットします。</p>
+  <div class="controls">
+    <div class="search">
+      <input id="q" type="search" placeholder="検索：例）deer, 谷, Glenfiddich, Dufftown, monk, hill…">
+    </div>
+  </div>
+</header>
+
+<!-- Forres -->
+<section class="district" data-district="Forres"><h2>フォレス (Forres) 地区</h2><div class="grid">
+  <article class="card" data-jp="ベンロマック" data-en="Benromach" data-meaning="赤い丘／赤い山 Red Hill">
+    <div class="names"><span class="jp">ベンロマック</span><span class="en">Benromach</span></div>
+    <div class="meaning"><div class="meaning-jp">「赤い丘／赤い山」</div><div class="meaning-en"><em>Red Hill</em></div></div>
+    <div class="extra"><a href="https://www.benromach.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Forres</span><span class="chip">丘・山</span></div>
+  </article>
+
+<article class="card" data-jp="ダンフェイル" data-en="Dunphail" data-meaning="砦 Fort">
+  <div class="names"><span class="jp">ダンフェイル</span><span class="en">Dunphail</span></div>
+    <div class="meaning-jp">「砦」 (※城/砦の名に由来)</div>
+    <div class="meaning-en"><em>Fort</em> (Named after the nearby castle/fortress)</div>
+  <div class="extra"><a href="https://www.dunphaildistillery.com/" target="_blank">Official Website</a></div>
+  <div class="meta"><span class="chip">Forres 近郊</span><span class="chip">城・砦</span></div>
+</article>
+
+</div></section>
+
+<!-- Elgin -->
+<section class="district" data-district="Elgin"><h2>エルギン (Elgin) 地区</h2><div class="grid">
+
+  <article class="card" data-jp="ベンリアック" data-en="Benriach" data-meaning="灰色の山 Grey/Brindled Hill">
+    <div class="names"><span class="jp">ベンリアック</span><span class="en">Benriach</span></div>
+    <div class="meaning"><div class="meaning-jp">「灰色（斑）の山」</div><div class="meaning-en"><em>Grey/Brindled Hill</em></div></div>
+    <div class="extra"><a href="https://benriach.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Elgin</span><span class="chip">丘・山</span></div>
+  </article>
+
+  <article class="card" data-jp="グレンバーギ" data-en="Glenburgie" data-meaning="バーギーの谷 Valley of Burgie">
+    <div class="names"><span class="jp">グレンバーギ</span><span class="en">Glenburgie</span></div>
+    <div class="meaning"><div class="meaning-jp">「Burgie（地名）の谷」</div><div class="meaning-en"><em>Valley of Burgie</em></div></div>
+    <div class="extra"><a href="https://www.chivas.com/en/our-distilleries/glenburgie" target="_blank">公式（Chivas）</a></div>
+    <div class="meta"><span class="chip">Elgin</span><span class="chip">谷</span></div>
+  </article>
+
+  <article class="card" data-jp="グレンエルギン" data-en="Glen Elgin" data-meaning="エルギンの谷 Valley of Elgin">
+    <div class="names"><span class="jp">グレンエルギン</span><span class="en">Glen Elgin</span></div>
+    <div class="meaning"><div class="meaning-jp">「エルギンの谷」</div><div class="meaning-en"><em>Valley of Elgin</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/glenelgin/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Elgin</span><span class="chip">谷</span></div>
+  </article>
+
+  <article class="card" data-jp="グレンロッシー" data-en="Glenlossie" data-meaning="ロッシー川の谷 Valley of the Lossie">
+    <div class="names"><span class="jp">グレンロッシー</span><span class="en">Glenlossie</span></div>
+    <div class="meaning"><div class="meaning-jp">「ロッシー川の谷」</div><div class="meaning-en"><em>Valley of the Lossie</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/glenlossie/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Elgin</span><span class="chip">谷・河川</span></div>
+  </article>
+
+  <article class="card" data-jp="グレンマレイ" data-en="Glen Moray" data-meaning="モーレイの谷 Valley of Moray">
+    <div class="names"><span class="jp">グレンマレイ</span><span class="en">Glen Moray</span></div>
+    <div class="meaning"><div class="meaning-jp">「モーレイの谷」</div><div class="meaning-en"><em>Valley of Moray</em></div></div>
+    <div class="extra"><a href="https://www.glenmoray.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Elgin</span><span class="chip">谷</span></div>
+  </article>
+
+  <article class="card" data-jp="リンクウッド" data-en="Linkwood" data-meaning="開け地そばの林 Wood by the Links">
+    <div class="names"><span class="jp">リンクウッド</span><span class="en">Linkwood</span></div>
+    <div class="meaning"><div class="meaning-jp">「links（開けた地／沿岸草地）のそばの林」</div><div class="meaning-en"><em>Wood by the Links</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/linkwood/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Elgin</span><span class="chip">地形</span></div>
+  </article>
+
+  <article class="card" data-jp="ロングモーン" data-en="Longmorn" data-meaning="聖マーノックゆかりの地 Land of Saint Marnoch">
+    <div class="names"><span class="jp">ロングモーン</span><span class="en">Longmorn</span></div>
+    <div class="meaning"><div class="meaning-jp">「聖マーノックゆかりの地」</div><div class="meaning-en"><em>Land of Saint Marnoch</em></div></div>
+    <div class="extra"><a href="https://www.longmorn.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Elgin</span><span class="chip">歴史・宗教</span></div>
+  </article>
+
+  <article class="card" data-jp="マノックモア" data-en="Mannochmore" data-meaning="大きなマンノック Greater Mannoch">
+    <div class="names"><span class="jp">マノックモア</span><span class="en">Mannochmore</span></div>
+    <div class="meaning"><div class="meaning-jp">「大きなモア（荒地）」</div><div class="meaning-en"><em>Greater Mannoch</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/mannochmore/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Elgin</span></div>
+  </article>
+
+  <article class="card" data-jp="ミルトンダフ" data-en="Miltonduff" data-meaning="ダフ家の農場 Duff’s Farmstead">
+    <div class="names"><span class="jp">ミルトンダフ</span><span class="en">Miltonduff</span></div>
+    <div class="meaning"><div class="meaning-jp">「Duff家の農場」</div><div class="meaning-en"><em>Duff’s Farmstead</em></div></div>
+    <div class="extra"><a href="https://www.chivas.com/en/our-distilleries/miltonduff" target="_blank">公式（Chivas）</a></div>
+    <div class="meta"><span class="chip">Elgin</span><span class="chip">集落・家名</span></div>
+  </article>
+
+  <article class="card" data-jp="ローズアイル" data-en="Roseisle" data-meaning="バラの島 Island of Roses">
+    <div class="names"><span class="jp">ローズアイル</span><span class="en">Roseisle</span></div>
+    <div class="meaning"><div class="meaning-jp">「バラの島」</div><div class="meaning-en"><em>Island of Roses</em></div></div>
+    <div class="extra"><span class="unknown">Unknown</span></div>
+    <div class="meta"><span class="chip">Elgin</span></div>
+  </article>
+
+</div></section>
+
+<!-- Keith -->
+<section class="district" data-district="Keith"><h2>キース (Keith) 地区</h2><div class="grid">
+
+  <article class="card" data-jp="オスロスク" data-en="Auchroisk" data-meaning="段丘の野原 Field by the Terraces">
+    <div class="names"><span class="jp">オスロスク</span><span class="en">Auchroisk</span></div>
+    <div class="meaning"><div class="meaning-jp">「段丘の野原」（諸説）</div><div class="meaning-en"><em>Field by the Terraces</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/auchroisk/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Keith</span></div>
+  </article>
+
+  <article class="card" data-jp="オルトモア" data-en="Aultmore" data-meaning="大きな小川 Great Stream">
+    <div class="names"><span class="jp">オルトモア</span><span class="en">Aultmore</span></div>
+    <div class="meaning"><div class="meaning-jjp">「大きな小川」</div><div class="meaning-en"><em>Great Stream</em></div></div>
+    <div class="extra"><a href="https://www.dewars.com/en-us/our-distilleries/aultmore/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Keith</span><span class="chip">河川</span></div>
+  </article>
+
+  <article class="card" data-jp="グレントファース" data-en="Glentauchers" data-meaning="トーファーズの谷 Valley of Tauchers">
+    <div class="names"><span class="jp">グレントファース</span><span class="en">Glentauchers</span></div>
+    <div class="meaning"><div class="meaning-jp">「Tauchersの谷」</div><div class="meaning-en"><em>Valley of Tauchers</em></div></div>
+    <div class="extra"><a href="https://www.dewars.com/en-us/our-distilleries/glentauchers/" target="_blank">公式（Dewar’s）</a></div>
+    <div class="meta"><span class="chip">Keith</span><span class="chip">谷</span></div>
+  </article>
+
+  <article class="card" data-jp="グレンキース" data-en="Glen Keith" data-meaning="キースの谷 Valley of Keith">
+    <div class="names"><span class="jp">グレンキース</span><span class="en">Glen Keith</span></div>
+    <div class="meaning"><div class="meaning-jp">「キースの谷」</div><div class="meaning-en"><em>Valley of Keith</em></div></div>
+    <div class="extra"><a href="https://www.chivas.com/en/our-distilleries/glen-keith" target="_blank">公式（Chivas）</a></div>
+    <div class="meta"><span class="chip">Keith</span><span class="chip">谷</span></div>
+  </article>
+
+  <article class="card" data-jp="ストラスアイラ" data-en="Strathisla" data-meaning="アイラ川の広い谷 Broad Valley of the Isla">
+    <div class="names"><span class="jp">ストラスアイラ</span><span class="en">Strathisla</span></div>
+    <div class="meaning"><div class="meaning-jp">「アイラ川の広い谷」</div><div class="meaning-en"><em>Broad Valley of the Isla</em></div></div>
+    <div class="extra"><a href="https://www.strathisla.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Keith</span><span class="chip">広い谷</span></div>
+  </article>
+
+  <article class="card" data-jp="ストラスミル" data-en="Strathmill" data-meaning="製粉所の広い谷 Broad Valley of the Mill">
+    <div class="names"><span class="jp">ストラスミル</span><span class="en">Strathmill</span></div>
+    <div class="meaning"><div class="meaning-jp">「製粉所の広い谷」</div><div class="meaning-en"><em>Broad Valley of the Mill</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/strathmill/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Keith</span></div>
+  </article>
+
+</div></section>
+
+<!-- Buckie -->
+<section class="district" data-district="Buckie"><h2>バッキー (Buckie) 地区</h2><div class="grid">
+  <article class="card" data-jp="インチガワー" data-en="Inchgower" data-meaning="山羊の島 Island of the Goats">
+    <div class="names"><span class="jp">インチガワー</span><span class="en">Inchgower</span></div>
+    <div class="meaning"><div class="meaning-jp">「山羊の島」</div><div class="meaning-en"><em>Island of the Goats</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/inchgower/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Buckie</span><span class="chip">島</span></div>
+  </article>
+</div></section>
+
+<!-- Rothes -->
+<section class="district" data-district="Rothes"><h2>ローゼス (Rothes) 地区</h2><div class="grid">
+
+  <article class="card" data-jp="キャパドニック" data-en="Caperdonich" data-meaning="秘密の泉 Secret Well">
+    <div class="names"><span class="jp">キャパドニック</span><span class="en">Caperdonich</span></div>
+    <div class="meaning"><div class="meaning-jp">「秘密の泉」（諸説）</div><div class="meaning-en"><em>Secret Well</em></div></div>
+    <div class="extra"><span class="unknown">Unknown</span></div>
+    <div class="meta"><span class="chip">Rothes</span></div>
+  </article>
+
+  <article class="card" data-jp="グレングラント" data-en="Glen Grant" data-meaning="グラント家の谷 Valley of the Grants">
+    <div class="names"><span class="jp">グレングラント</span><span class="en">Glen Grant</span></div>
+    <div class="meaning"><div class="meaning-jp">「グラント家の谷」</div><div class="meaning-en"><em>Valley of the Grants</em></div></div>
+    <div class="extra"><a href="https://www.glengrant.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Rothes</span><span class="chip">谷・家名</span></div>
+  </article>
+
+  <article class="card" data-jp="グレンロセス" data-en="Glenrothes" data-meaning="ローゼスの谷 Valley of Rothes">
+    <div class="names"><span class="jp">グレンロセス</span><span class="en">Glenrothes</span></div>
+    <div class="meaning"><div class="meaning-jp">「ローゼスの谷」</div><div class="meaning-en"><em>Valley of Rothes</em></div></div>
+    <div class="extra"><a href="https://www.theglenrothes.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Rothes</span><span class="chip">谷</span></div>
+  </article>
+
+  <article class="card" data-jp="グレンスペイ" data-en="Glen Spey" data-meaning="スペイ川の谷 Valley of the Spey">
+    <div class="names"><span class="jp">グレンスペイ</span><span class="en">Glen Spey</span></div>
+    <div class="meaning"><div class="meaning-jp">「スペイ川の谷」</div><div class="meaning-en"><em>Valley of the Spey</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/glenspey/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Rothes</span><span class="chip">谷・河川</span></div>
+  </article>
+
+</div></section>
+
+
+<!-- Dufftown -->
+<section class="district" data-district="Dufftown"><h2>ダフタウン (Dufftown) 地区</h2><div class="grid">
+
+  <article class="card" data-jp="アルタベーン" data-en="Allt-a-Bhainne" data-meaning="ミルクの小川 Stream of Milk">
+    <div class="names"><span class="jp">アルタベーン</span><span class="en">Allt-a-Bhainne</span></div>
+    <div class="meaning"><div class="meaning-jp">「ミルクの小川」</div><div class="meaning-en"><em>Stream of Milk</em></div></div>
+    <div class="extra"><a href="https://www.chivas.com/en/our-distilleries/allt-a-bhainne" target="_blank">公式（Chivas）</a></div>
+    <div class="meta"><span class="chip">Dufftown</span><span class="chip">河川</span></div>
+  </article>
+
+  <article class="card" data-jp="バルヴェニー" data-en="Balvenie" data-meaning="僧侶の町 Town of the Monks">
+    <div class="names"><span class="jp">バルヴェニー</span><span class="en">Balvenie</span></div>
+    <div class="meaning"><div class="meaning-jp">「僧侶の町」</div><div class="meaning-en"><em>Town of the Monks</em></div></div>
+    <div class="extra"><a href="https://www.thebalvenie.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Dufftown</span><span class="chip">宗教・集落</span></div>
+  </article>
+
+  <article class="card" data-jp="ダフタウン" data-en="Dufftown" data-meaning="ダフ家の町 Town of the Duff Family">
+    <div class="names"><span class="jp">ダフタウン</span><span class="en">Dufftown</span></div>
+    <div class="meaning"><div class="meaning-jp">「Duff家の町」</div><div class="meaning-en"><em>Town of the Duff Family</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/dufftown/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Dufftown</span><span class="chip">町名</span></div>
+  </article>
+
+  <article class="card" data-jp="グレンダラン" data-en="Glendullan" data-meaning="ダラン川の谷 Valley of the Dullan">
+    <div class="names"><span class="jp">グレンダラン</span><span class="en">Glendullan</span></div>
+    <div class="meaning"><div class="meaning-jp">「Dullan川の谷」</div><div class="meaning-en"><em>Valley of the Dullan</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/glendullan/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Dufftown</span><span class="chip">谷・河川</span></div>
+  </article>
+
+  <article class="card" data-jp="グレンフィディック" data-en="Glenfiddich" data-meaning="鹿の谷 Valley of the Deer">
+    <div class="names"><span class="jp">グレンフィディック</span><span class="en">Glenfiddich</span></div>
+    <div class="meaning"><div class="meaning-jp">「鹿の谷」</div><div class="meaning-en"><em>Valley of the Deer</em></div></div>
+    <div class="extra"><a href="https://www.glenfiddich.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Dufftown</span><span class="chip">谷・動物</span></div>
+  </article>
+
+  <article class="card" data-jp="キニンヴィ" data-en="Kininvie" data-meaning="小丘の集落 Settlement at the Little Hill">
+    <div class="names"><span class="jp">キニンヴィ</span><span class="en">Kininvie</span></div>
+    <div class="meaning"><div class="meaning-jp">「小さな丘の集落」（諸説）」</div><div class="meaning-en"><em>Settlement at the Little Hill</em></div></div>
+    <div class="extra"><a href="https://www.kininvie.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Dufftown</span></div>
+  </article>
+
+  <article class="card" data-jp="モートラック" data-en="Mortlach" data-meaning="大きな丘 Great Hill">
+    <div class="names"><span class="jp">モートラック</span><span class="en">Mortlach</span></div>
+    <div class="meaning"><div class="meaning-jp">「大きな丘」</div><div class="meaning-en"><em>Great Hill</em></div></div>
+    <div class="extra"><a href="https://www.mortlach.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Dufftown</span><span class="chip">丘</span></div>
+  </article>
+
+  <article class="card" data-jp="ピティヴェアック" data-en="Pittyvaich" data-meaning="小さな農場の地 Place of the Small Farm">
+    <div class="names"><span class="jp">ピティヴェアック</span><span class="en">Pittyvaich</span></div>
+    <div class="meaning"><div class="meaning-jp">「小さな農場の地」</div><div class="meaning-en"><em>Place of the Small Farm</em></div></div>
+    <div class="extra"><span class="unknown">Unknown</span></div>
+    <div class="meta"><span class="chip">Dufftown</span></div>
+  </article>
+
+</div></section>
+
+<!-- Livet -->
+<section class="district" data-district="Livet"><h2>リベット (Livet) 地区</h2><div class="grid">
+
+  <article class="card" data-jp="ブレイヴァル" data-en="Braeval (Braes of Glenlivet)" data-meaning="リベットの丘陵 Slopes of Glenlivet">
+    <div class="names"><span class="jp">ブレイヴァル</span><span class="en">Braeval (Braes of Glenlivet)</span></div>
+    <div class="meaning"><div class="meaning-jp">「リベットの丘陵」</div><div class="meaning-en"><em>Slopes of Glenlivet</em></div></div>
+    <div class="extra"><a href="https://www.chivas.com/en/our-distilleries/braeval" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Livet</span><span class="chip">丘陵</span></div>
+  </article>
+
+  <article class="card" data-jp="ザ・グレンリベット" data-en="The Glenlivet" data-meaning="リベット川の谷 Valley of the Livet">
+    <div class="names"><span class="jp">ザ・グレンリベット</span><span class="en">The Glenlivet</span></div>
+    <div class="meaning"><div class="meaning-jp">「リベット川の谷」</div><div class="meaning-en"><em>Valley of the Livet</em></div></div>
+    <div class="extra"><a href="https://www.theglenlivet.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Livet</span><span class="chip">谷・河川</span></div>
+  </article>
+
+  <article class="card" data-jp="タムナヴーリン" data-en="Tamnavulin" data-meaning="製粉所の丘 Hill of the Mill">
+    <div class="names"><span class="jp">タムナヴーリン</span><span class="en">Tamnavulin</span></div>
+    <div class="meaning"><div class="meaning-jp">「製粉所の丘」</div><div class="meaning-en"><em>Hill of the Mill</em></div></div>
+    <div class="extra"><a href="https://www.tamnavulinwhisky.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Livet</span><span class="chip">丘・施設</span></div>
+  </article>
+
+  <article class="card" data-jp="トミントール" data-en="Tomintoul" data-meaning="納屋の丘 Hill of the Barn">
+    <div class="names"><span class="jp">トミントール</span><span class="en">Tomintoul</span></div>
+    <div class="meaning"><div class="meaning-jp">「納屋の丘」</div><div class="meaning-en"><em>Hill of the Barn</em></div></div>
+    <div class="extra"><a href="https://www.tomintoulwhisky.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Livet</span><span class="chip">丘</span></div>
+  </article>
+
+</div></section>
+
+<!-- Mid/Lower Spey -->
+<section class="district" data-district="MidLower Spey"><h2>スペイ川中・下流地域</h2><div class="grid">
+
+  <article class="card" data-jp="アベラワー" data-en="Aberlour" data-meaning="轟く小川の河口 Mouth of the Roaring Burn">
+    <div class="names"><span class="jp">アベラワー</span><span class="en">Aberlour</span></div>
+    <div class="meaning"><div class="meaning-jp">「轟く小川の河口」</div><div class="meaning-en"><em>Mouth of the Roaring Burn</em></div></div>
+    <div class="extra"><a href="https://www.aberlour.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">河口</span></div>
+  </article>
+
+  <article class="card" data-jp="バルミナック" data-en="Balmenach" data-meaning="中つ集落／中ほどの村 Middle Township">
+    <div class="names"><span class="jp">バルミナック</span><span class="en">Balmenach</span></div>
+    <div class="meaning"><div class="meaning-jp">「中つ集落」</div><div class="meaning-en"><em>Middle Township</em></div></div>
+    <div class="extra"><a href="https://www.inverhouse.com/distilleries/balmenach/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">集落</span></div>
+  </article>
+
+  <article class="card" data-jp="バリンダロッホ" data-en="Ballindalloch" data-meaning="ダロッホ家の集落 Township of the Dalloch">
+    <div class="names"><span class="jp">バリンダロッホ</span><span class="en">Ballindalloch</span></div>
+    <div class="meaning"><div class="meaning-jp">「ダロッホ家の集落」</div><div class="meaning-en"><em>Township of the Dalloch</em></div></div>
+    <div class="extra"><a href="https://www.ballindallochdistillery.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">集落・家名</span></div>
+  </article>
+
+  <article class="card" data-jp="ベンリネス" data-en="Benrinnes" data-meaning="リネス山 Mount Rinnes">
+    <div class="names"><span class="jp">ベンリネス</span><span class="en">Benrinnes</span></div>
+    <div class="meaning"><div class="meaning-jp">「リネス山」</div><div class="meaning-en"><em>Mount Rinnes</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/benrinnes/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">山</span></div>
+  </article>
+
+  <article class="card" data-jp="カードゥ" data-en="Cardhu" data-meaning="黒い岩 Black Rock">
+    <div class="names"><span class="jp">カードゥ</span><span class="en">Cardhu</span></div>
+    <div class="meaning"><div class="meaning-jp">「黒い岩」</div><div class="meaning-en"><em>Black Rock</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/cardhu/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">岩</span></div>
+  </article>
+
+  <article class="card" data-jp="クラガンモア" data-en="Cragganmore" data-meaning="大きな岩 Great Rock">
+    <div class="names"><span class="jp">クラガンモア</span><span class="en">Cragganmore</span></div>
+    <div class="meaning"><div class="meaning-jp">「大きな岩」</div><div class="meaning-en"><em>Great Rock</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/cragganmore/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">岩</span></div>
+  </article>
+
+  <article class="card" data-jp="クレイゲラキ" data-en="Craigellachie" data-meaning="岩の丘 Rocky Hill">
+    <div class="names"><span class="jp">クレイゲラキ</span><span class="en">Craigellachie</span></div>
+    <div class="meaning"><div class="meaning-jp">「岩の丘」</div><div class="meaning-en"><em>Rocky Hill</em></div></div>
+    <div class="extra"><a href="https://www.craigellachie.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">岩・丘</span></div>
+  </article>
+
+  <article class="card" data-jp="ダルムナック" data-en="Dalmunach" data-meaning="修道士の野 Field of the Monks">
+    <div class="names"><span class="jp">ダルムナック</span><span class="en">Dalmunach</span></div>
+    <div class="meaning"><div class="meaning-jp">「修道士の野」</div><div class="meaning-en"><em>Field of the Monks</em></div></div>
+    <div class="extra"><a href="https://www.chivas.com/en/our-distilleries/dalmunach" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">野・宗教</span></div>
+  </article>
+
+  <article class="card" data-jp="ダルユーイン" data-en="Dailuaine" data-meaning="緑の谷 Green Valley">
+    <div class="names"><span class="jp">ダルユーイン</span><span class="en">Dailuaine</span></div>
+    <div class="meaning"><div class="meaning-jp">「緑の谷」</div><div class="meaning-en"><em>Green Valley</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/dailuaine/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">谷</span></div>
+  </article>
+
+  <article class="card" data-jp="グレンアラヒー" data-en="GlenAllachie" data-meaning="石の谷 Valley of Stones">    
+    <div class="names"><span class="jp">グレンアラヒー</span><span class="en">GlenAllachie</span></div>
+    <div class="meaning"><div class="meaning-jp">「石の谷」</div><div class="meaning-en"><em>Valley of Stones</em></div></div>
+    <div class="extra"><a href="https://theglenallachie.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">谷・岩</span></div>
+  </article>
+
+  <article class="card" data-jp="グレンファークラス" data-en="Glenfarclas" data-meaning="緑の草の谷 Valley of Green Grass">
+    <div class="names"><span class="jp">グレンファークラス</span><span class="en">Glenfarclas</span></div>
+    <div class="meaning"><div class="meaning-jp">「緑の草の谷」</div><div class="meaning-en"><em>Valley of Green Grass</em></div></div>
+    <div class="extra"><a href="https://www.glenfarclas.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">谷・草地</span></div>
+  </article>
+
+  <article class="card" data-jp="インペリアル" data-en="Imperial" data-meaning="帝国の名 Imperial">
+    <div class="names"><span class="jp">インペリアル</span><span class="en">Imperial</span></div>
+    <div class="meaning"><div class="meaning-jp">「帝国の名にちなむ」</div><div class="meaning-en"><em>Imperial</em></div></div>
+    <div class="extra"><span class="unknown">Unknown</span></div>
+    <div class="meta"><span class="chip">Spey</span></div>
+  </article>
+
+  <article class="card" data-jp="ノッカンドゥ" data-en="Knockando" data-meaning="黒い丘の頂 Black Hill (Summit)">
+    <div class="names"><span class="jp">ノッカンドゥ</span><span class="en">Knockando</span></div>
+    <div class="meaning"><div class="meaning-jp">「黒い丘（の頂）」</div><div class="meaning-en"><em>Black Hill (Summit)</em></div></div>
+    <div class="extra"><a href="https://www.discovering-distilleries.com/knockando/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">丘</span></div>
+  </article>
+
+  <article class="card" data-jp="マッカラン" data-en="Macallan" data-meaning="聖コランの平原 Plain of St. Collan">
+    <div class="names"><span class="jp">マッカラン</span><span class="en">Macallan</span></div>
+    <div class="meaning"><div class="meaning-jp">「聖コランの平原」</div><div class="meaning-en"><em>Plain of St. Collan</em></div></div>
+    <div class="extra"><a href="https://www.themacallan.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">宗教・平原</span></div>
+  </article>
+
+  <article class="card" data-jp="タムドゥー" data-en="Tamdhu" data-meaning="黒い丘 Black Hill">
+    <div class="names"><span class="jp">タムドゥー</span><span class="en">Tamdhu</span></div>
+    <div class="meaning"><div class="meaning-jp">「黒い丘」</div><div class="meaning-en"><em>Black Hill</em></div></div>
+    <div class="extra"><a href="https://www.tamdhu.com/" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">丘</span></div>
+  </article>
+
+  <article class="card" data-jp="トーモア" data-en="Tormore" data-meaning="大きな塚／丘 Great Hillock">
+    <div class="names"><span class="jp">トーモア</span><span class="en">Tormore</span></div>
+    <div class="meaning"><div class="meaning-jp">「大きな塚／丘」</div><div class="meaning-en"><em>Great Hillock</em></div></div>
+    <div class="extra"><a href="https://www.chivas.com/en/our-brands/tormore" target="_blank">Official Website</a></div>
+    <div class="meta"><span class="chip">Spey</span><span class="chip">丘</span></div>
+  </article>
+
+  <article class="card" data-jp="クレイゲラキ" data-en="Craigellachie" style="display:none"></article><!-- duplicate guard -->
+
+</div></section>
+

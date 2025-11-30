@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Socatch Index — 蒸留所検索＆地域ナビ</title>
+
+<style>
+  :root{
+    --bg:#0f0e0d; --panel:#1b1917; --ink:#f6f1e9;
+    --muted:#b9b2a6; --accent:#c7a97a; --chip:#2a2724; --border:#2e2a26;
+  }
+  html,body{
+    background:radial-gradient(circle at 40% 15%, #1a1715 0%, #0d0c0b 85%);
+    color:var(--ink); margin:0;
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  }
+  .wrap{max-width:1100px; margin:28px auto; padding:0 16px;}
+  header{margin-bottom:10px}
+  h1{font-size:30px; font-weight:800; letter-spacing:.02em; margin:0 0 8px}
+  .subtitle{color:var(--muted); margin:0 0 18px; line-height:1.6}
+
+  /* 🔍 検索 */
+  .controls{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin:0 0 60px}
+  .search{flex:1; min-width:260px; position:relative}
+  input[type="search"]{
+    width:100%; padding:12px 14px; background:#12100f; color:var(--ink);
+    border:1px solid var(--border); border-radius:12px; font-size:16px; outline:none;
+  }
+  .hint{font-size:12px; color:var(--muted); margin-top:10px}
+
+  /* 📦 地域カード */
+  .region-grid{
+    display:grid; gap:18px;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    margin:20px 0 30px;
+  }
+  .region-card{
+    background:radial-gradient(circle at 30% 20%, #1d1b19 0%, #141210 90%);
+    border:1px solid rgba(90,80,65,.35);
+    border-radius:16px;
+    padding:20px;
+    box-shadow:inset 0 0 10px rgba(0,0,0,.45), 0 2px 5px rgba(0,0,0,.4);
+    text-decoration:none; color:inherit;
+    transition:transform .2s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .region-card:hover{
+    transform:translateY(-3px);
+    border-color:rgba(200,180,120,.5);
+    box-shadow:inset 0 0 12px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.45), 0 0 8px rgba(210,180,120,.15);
+  }
+  .region-card h2{
+    color:var(--accent); font-size:20px; font-weight:800;
+    margin:0 0 8px;
+    border-bottom:1px solid rgba(199,169,122,.25);
+    padding-bottom:4px;
+  }
+  .region-card p{font-size:14px; color:var(--muted); line-height:1.7;}
+
+  footer{
+    color:var(--muted); font-size:12px;
+    margin:28px 0 40px; line-height:1.6;
+    border-top:1px solid rgba(255,255,255,.05); padding-top:10px;
+  }
+
+  /* 🔝 上部固定 戻りボタン（横並び） */
+  .top-back-wrap{
+    position:fixed;
+    top:16px;
+    left:16px;
+    z-index:999;
+    display:flex;
+    gap:10px;
+  }
+  .back-top{
+    display:inline-block;
+    background:#181614;
+    color:var(--accent);
+    border:1px solid rgba(199,169,122,.4);
+    border-radius:10px;
+    padding:8px 14px;
+    font-weight:700;
+    text-decoration:none;
+    transition:all .25s ease;
+    box-shadow:0 2px 6px rgba(0,0,0,.4);
+  }
+  .back-top:hover{
+    background:#1f1c18;
+    color:#fff4e0;
+    transform:translateY(-2px);
+  }
+
+  /* 📱スマホ */
+  @media(max-width:600px){
+    .top-back-wrap{
+      top:10px; left:10px; gap:8px;
+    }
+    .back-top{
+      font-size:14px; padding:7px 12px;
+    }
+  }
+
+  /* 🔽 検索候補 */
+  .suggest{
+    position:absolute; left:0; right:0;
+    background:#181614; border:1px solid rgba(90,80,65,.35);
+    border-radius:10px; margin-top:6px;
+    max-height:280px; overflow:auto;
+    width:100%; z-index:50; display:none;
+  }
+  .suggest a{
+    display:flex; justify-content:space-between; gap:10px;
+    padding:10px 12px; text-decoration:none; color:inherit;
+  }
+  .suggest a:hover{background:#1e1c1a}
+</style>
+</head>
+
+<body>
+
+<!-- 🔝 戻りボタン（横並び） -->
+<div class="top-back-wrap">
+  <a href="index.html" class="back-top">← Index</a>
+  <a href="five-major-whiskies.html" class="back-top">← Five-major-whiskies</a>
+</div>
+
+<div class="wrap">
+<
+	>
+  <h1>Socatch Index — 蒸留所検索＆地域ナビ</h1>
+  <p class="subtitle">6地域のカードから蒸留所ページへ。検索バーで直接探すことも可能です。</p>
+
+  <div class="controls">
+    <div class="search">
+      <input id="q" type="search" placeholder="検索：例）Benriach / ボウモア / Lagavulin…" autocomplete="off" />
+      <div id="sg" class="suggest"></div>
+      <div class="hint">英語・日本語どちらでも検索できます。</div>
+    </div>
+  </div>
+</header>
+
+<section class="region-grid">
+  <a href="speyside-distillery.html" class="region-card">
+    <h2>Speyside</h2>
+    <p>スコットランド北東部の中心地。果実香とエレガントな味わいが特徴。代表：Macallan, Glenfiddich</p>
+  </a>
+  <a href="highland-distillery.html" class="region-card">
+    <h2>Highland</h2>
+    <p>最大の生産エリアで多様性に富む。花香からスモーキーまで幅広い。代表：Glenmorangie, Dalmore</p>
+  </a>
+  <a href="islay-distillery.html" class="region-card">
+    <h2>Islay</h2>
+    <p>ピート香の聖地。潮風と煙が融合した強烈な個性。代表：Ardbeg, Lagavulin, Laphroaig</p>
+  </a>
+  <a href="islands-distillery.html" class="region-card">
+    <h2>Islands</h2>
+    <p>島ごとに異なる個性。塩気と甘みが混ざる海洋性モルト。代表：Talisker, Jura, Arran</p>
+  </a>
+  <a href="campbeltown-distillery.html" class="region-card">
+    <h2>Campbeltown</h2>
+    <p>往年の名産地。オイリーで海風を感じる骨太モルト。代表：Springbank, Glen Scotia</p>
+  </a>
+  <a href="lowland-distillery.html" class="region-card">
+    <h2>Lowland</h2>
+    <p>軽やかで柔らかな味わい。3回蒸留によるスムースさが魅力。代表：Auchentoshan, Glenkinchie</p>
+  </a>
+</section>
+
+<footer>
+  © Bar SPEC — Socatch Hub<br>
+ 
+</footer>
+</div>
+
+<!-- 🔍検索スクリプト -->
+<script>
+const DATA = [
+  {en:"Ardbeg", jp:"アードベッグ", href:"islay-distillery.html#Ardbeg"},
+  {en:"Lagavulin", jp:"ラガヴーリン", href:"islay-distillery.html#Lagavulin"},
+  {en:"Laphroaig", jp:"ラフロイグ", href:"islay-distillery.html#Laphroaig"},
+  {en:"Macallan", jp:"マッカラン", href:"speyside-distillery.html#Macallan"},
+  {en:"Glenfiddich", jp:"グレンフィディック", href:"speyside-distillery.html#Glenfiddich"},
+  {en:"Springbank", jp:"スプリングバンク", href:"campbeltown-distillery.html#Springbank"},
+  {en:"Dalmore", jp:"ダルモア", href:"highland-distillery.html#Dalmore"},
+  {en:"Talisker", jp:"タリスカー", href:"islands-distillery.html#Talisker"}
+];
+
+const q=document.getElementById('q');
+const sg=document.getElementById('sg');
+
+function norm(s){return (s||'').toLowerCase();}
+function renderSuggest(items){
+  if(!items.length){ sg.style.display='none'; sg.innerHTML=''; return; }
+  sg.innerHTML = items.map(r=>`<a href="${r.href}"><span>${r.en}</span><span>${r.jp}</span></a>`).join('');
+  sg.style.display='block';
+}
+
+q.addEventListener('input',()=>{
+  const v=norm(q.value);
+  if(!v) return renderSuggest([]);
+  const hits=DATA.filter(r=>norm(r.en).includes(v)||norm(r.jp).includes(v));
+  renderSuggest(hits);
+});
+
+q.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    const v=norm(q.value);
+    const hit=DATA.find(r=>norm(r.en).includes(v)||norm(r.jp).includes(v));
+    if(hit) window.location.href=hit.href;
+  }
+});
+
+document.addEventListener('click',e=>{
+  if(!sg.contains(e.target)&&e.target!==q) sg.style.display='none';
+});
+</script>
+
+</body>
+</html>

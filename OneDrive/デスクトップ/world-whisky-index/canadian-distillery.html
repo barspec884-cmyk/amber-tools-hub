@@ -1,0 +1,308 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Canadian Distilleries — カナダ蒸溜所一覧</title>
+
+<style>
+:root{
+  --bg:#140e0b;
+  --ink:#f9f6f2;
+  --muted:#c9b9a9;
+  --accent:#d85b2e;   /* Maple Red */
+  --chip:#2b1e16;
+  --border:#3a2a1f;
+  --panel:#1c1410;
+}
+html,body{
+  margin:0;
+  background:radial-gradient(1200px 800px at 45% 10%, #2a1e17 0%, #140e0b 60%, #0c0806 100%);
+  color:var(--ink);
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+}
+.wrap{max-width:1000px; margin:28px auto; padding:0 16px;}
+
+.nav-links{
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;   /* ★折り返し完全禁止 */
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.back{
+  display:inline-block;
+  padding:8px 14px;
+  background:var(--panel);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:10px;
+  text-decoration:none;
+  color:var(--accent);
+  font-weight:700;
+  transition:.2s;
+}
+.back:hover{background:#241710; color:#fff;}
+
+h1{margin:0 0 10px; font-size:28px; font-weight:800; color:var(--accent);}
+.subtitle{margin:0 0 22px; color:var(--muted); line-height:1.6;}
+
+.cards{
+  display:grid;
+  gap:14px;
+  grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+}
+
+/* --- カード統一デザイン（Japan型） --- */
+.card{
+  background:linear-gradient(160deg,#201712 0%,#18100b 100%);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px 18px 18px;
+  transition:all .25s ease;
+  box-shadow:0 0 5px rgba(216,91,46,.10);
+}
+.card:hover{
+  transform:translateY(-4px);
+  border-color:var(--accent);
+  box-shadow:0 6px 14px rgba(216,91,46,.25);
+}
+
+.names{display:flex; flex-direction:column; gap:4px; margin-bottom:10px;}
+.jp{font-size:16px; font-weight:700;}
+.en{font-size:14px; color:var(--muted);}
+
+.desc{
+  font-size:13.5px;
+  color:var(--muted);
+  line-height:1.6;
+  margin-bottom:10px;
+}
+
+.meta{
+  display:flex; flex-wrap:wrap; gap:6px;
+}
+.chip{
+  background:var(--chip);
+  border:1px solid var(--border);
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+  color:var(--muted);
+  text-decoration:none;
+}
+.chip:hover{opacity:.75;}
+
+h2{
+  margin:32px 0 14px;
+  padding-left:10px;
+  border-left:4px solid var(--accent);
+  font-size:20px;
+  color:var(--accent);
+}
+footer{
+  margin:40px 0 30px;
+  padding-top:14px;
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
+  border-top:1px solid rgba(255,255,255,.08);
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<div class="nav-links">
+  <a class="back" href="index.html">← World Whisky Index</a>
+  <a class="back" href="five-major-whiskies.html">← Five major whiskies</a>
+</div>
+
+<h1>Canadian Distilleries</h1>
+<p class="subtitle">カナダの主要蒸溜所からクラフトまで。</p>
+
+<div class="cards">
+
+<!-- Crown Royal -->
+<article class="card"
+ data-jp="クラウンローヤル蒸溜所"
+ data-en="Crown Royal Distillery"
+ data-company="Diageo"
+ data-pref="Canada">
+  <div class="names">
+    <span class="jp">クラウン・ローヤル蒸溜所</span>
+    <span class="en">Crown Royal Distillery</span>
+  </div>
+  <div class="desc">カナダを代表するブレンデッド。滑らかで甘やかな飲み口。</div>
+  <div class="meta">
+    <span class="chip">設立：1939</span>
+    <span class="chip">オーナー：Diageo</span>
+    <a class="chip" href="https://www.crownroyal.com/" target="_blank">Official Website</a>
+  </div>
+</article>
+
+<!-- Canadian Club -->
+<article class="card"
+ data-jp="カナディアンクラブ蒸溜所"
+ data-en="Canadian Club"
+ data-company="Suntory Global Spirits">
+  <div class="names">
+    <span class="jp">カナディアン・クラブ蒸溜所</span>
+    <span class="en">Canadian Club</span>
+  </div>
+  <div class="desc">“C.C.”として世界的に知られる歴史的ブランド。軽快でスムース。</div>
+  <div class="meta">
+    <span class="chip">設立：1858</span>
+    <span class="chip">オーナー：Suntory Global Spirits</span>
+    <a class="chip" href="https://www.canadianclub.com/" target="_blank">Official Website
+	  </a>
+  </div>
+</article>
+<!-- Wiser’s -->
+<article class="card"
+ data-jp="ワイザーズ蒸溜所"
+ data-en="Wiser’s Whisky Distillery"
+ data-company="Corby / Pernod Ricard">
+  <div class="names">
+    <span class="jp">ワイザーズ・ウイスキー蒸溜所</span>
+    <span class="en">Wiser’s Whisky Distillery</span>
+  </div>
+  <div class="desc">カナダ最大級の老舗。スパイシーで存在感ある味わい。</div>
+  <div class="meta">
+    <span class="chip">設立：1857</span>
+    <span class="chip">オーナー：Corby / Pernod Ricard</span>
+    <a class="chip" href="https://www.jpwiserstour.ca/" target="_blank">Official Website</a>
+  </div>
+</article>
+
+<!-- Forty Creek -->
+<article class="card"
+ data-jp="フォーティークリーク蒸溜所"
+ data-en="Forty Creek Distillery"
+ data-company="Campari Group">
+  <div class="names">
+    <span class="jp">フォーティー・クリーク蒸溜所</span>
+    <span class="en">Forty Creek Distillery</span>
+  </div>
+  <div class="desc">革新的な熟成技法で知られる人気ブランド。</div>
+  <div class="meta">
+    <span class="chip">設立：1992</span>
+    <span class="chip">オーナー：Campari Group</span>
+    <a class="chip" href="https://fortycreekwhisky.com/" target="_blank">Official Website</a>
+  </div>
+</article>
+
+<!-- Canadian Mist -->
+<article class="card"
+ data-jp="カナディアンミスト蒸溜所"
+ data-en="Canadian Mist Distillery"
+ data-company="Sazerac Company">
+  <div class="names">
+    <span class="jp">カナディアン・ミスト蒸溜所</span>
+    <span class="en">Canadian Mist Distillery</span>
+  </div>
+  <div class="desc">軽快でライトなスタイル。北米市場の定番。</div>
+  <div class="meta">
+    <span class="chip">設立：1967</span>
+    <span class="chip">オーナー：Sazerac Company</span>
+    <a class="chip" href="https://www.canadianmist.com/" target="_blank">Official Website</a>
+  </div>
+</article>
+
+<!-- Alberta Distillers -->
+<article class="card"
+ data-jp="アルバータ蒸溜所"
+ data-en="Alberta Distillers"
+ data-company="Beam Suntory">
+  <div class="names">
+    <span class="jp">アルバータ蒸溜所</span>
+    <span class="en">Alberta Distillers</span>
+  </div>
+  <div class="desc">世界有数のライウイスキー生産地。力強いスタイル。</div>
+  <div class="meta">
+    <span class="chip">設立：1946</span>
+    <span class="chip">オーナー：Beam Suntory</span>
+    <a class="chip" href="https://www.albertadistillers.com/" target="_blank">Official Website</a>
+  </div>
+</article>
+
+<!-- Hiram Walker -->
+<article class="card"
+ data-jp="ハイラムウォーカー蒸溜所"
+ data-en="Hiram Walker & Sons"
+ data-company="Pernod Ricard">
+  <div class="names">
+    <span class="jp">ハイラム・ウォーカー＆サンズ蒸溜所</span>
+    <span class="en">Hiram Walker & Sons</span>
+  </div>
+  <div class="desc">国内外へ原酒を供給する巨大蒸溜所。</div>
+  <div class="meta">
+    <span class="chip">設立：1858</span>
+    <span class="chip">オーナー：Pernod Ricard</span>
+    <a class="chip" href="https://www.hiramwalker.com/" target="_blank">Official Website</a>
+  </div>
+</article>
+
+<!-- Highwood -->
+<article class="card"
+ data-jp="ハイウッド蒸溜所"
+ data-en="Highwood Distillers"
+ data-company="Highwood Distillers Ltd.">
+  <div class="names">
+    <span class="jp">ハイウッド蒸溜所</span>
+    <span class="en">Highwood Distillers</span>
+  </div>
+  <div class="desc">クラフト系で人気。軽快で飲みやすい。</div>
+  <div class="meta">
+    <span class="chip">設立：1974</span>
+    <span class="chip">オーナー：Highwood Distillers</span>
+    <a class="chip" href="https://www.highwooddistillers.com/" target="_blank">Official Website</a>
+  </div>
+</article>
+
+</div><!-- main cards end -->
+
+
+<!-- Craft & Local -->
+<h2>Craft & Local</h2>
+<div class="cards">
+
+<!-- 例：Shelter Point → Japanデザイン統一 -->
+<article class="card"
+ data-jp="シェルターポイント蒸溜所"
+ data-en="Shelter Point Distillery"
+ data-company="ThaiBev">
+  <div class="names">
+    <span class="jp">シェルター・ポイント蒸溜所</span>
+    <span class="en">Shelter Point Distillery</span>
+  </div>
+  <div class="desc">美しいバンクーバー島で造られる人気クラフトウイスキー。</div>
+  <div class="meta">
+    <span class="chip">地域：British Columbia</span>
+    <span class="chip">オーナー：ThaiBev</span>
+  </div>
+</article>
+
+<!-- 以下、同じカード形式でクラフトを追加できます -->
+<article class="card" data-jp="ブラックフォックス" data-en="Black Fox Distillery">
+  <div class="names"><span class="jp">ブラック・フォックス蒸溜所</span><span class="en">Black Fox Distillery</span></div>
+  <div class="desc">農園系クラフト。限定品が高評価。</div>
+  <div class="meta"><span class="chip">地域：Saskatchewan</span></div>
+</article>
+
+<article class="card" data-jp="ブリッジランド" data-en="Bridgeland Distillery">
+  <div class="names"><span class="jp">ブリッジランド蒸溜所</span><span class="en">Bridgeland Distillery</span></div>
+  <div class="desc">カルガリーの注目クラフト蒸溜所。</div>
+  <div class="meta"><span class="chip">地域：Alberta</span></div>
+</article>
+
+<!-- 必要に応じて全クラフトも統一できます -->
+
+</div>
+
+<footer>© Bar SPEC — World Whisky Index (Canada Edition)</footer>
+
+</div><!-- wrap end -->
+</body>
+</html>

@@ -1,0 +1,278 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>World Whisky Map — Amber Palette</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+:root{
+  --amber:#c7a97a;
+  --amber-bright:#ffc66a;
+  --ink:#f6f1e9;
+  --bg1:#060606;
+  --bg2:#14110f;
+}
+
+body{
+  margin:0;
+  background:radial-gradient(circle at top,var(--bg1),var(--bg2));
+  font-family:'Noto Sans JP','Meiryo',sans-serif;
+  color:var(--ink);
+}
+
+/* ヘッダー */
+#headerBar{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  padding:12px 12px;
+  text-align:center;
+  font-size:20px;
+  background:rgba(0,0,0,0.82);
+  border-bottom:1px solid #333;
+  color:var(--amber);
+  z-index:1000;
+}
+
+/* 地図 */
+#map{
+  width:100vw;
+  height:100vh;
+}
+
+/* ----------------------------
+   左側の旗ボタン
+----------------------------- */
+#areaButtons{
+  position:fixed;
+  bottom:80px;
+  left:10px;
+  z-index:9999;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+@media (max-width:600px){
+  #areaButtons{
+    bottom:100px;
+    left:8px;
+  }
+}
+
+.flag-btn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 12px;
+  min-width:140px;
+  background:rgba(20,20,20,0.75);
+  border:1px solid rgba(199,169,122,0.8);
+  border-radius:999px;
+  color:var(--ink);
+  font-size:15px;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,0.45);
+  backdrop-filter:blur(5px);
+}
+
+.flag-btn.active{
+  background:linear-gradient(135deg,var(--amber-bright),#c07a2c);
+  color:#1a1108;
+  border-color:#f1d6a0;
+}
+
+.flag-icon{
+  width:20px;
+  height:14px;
+  object-fit:cover;
+  border-radius:2px;
+}
+
+/* Scotland のサブボタン（今は未使用） */
+#scotlandSub{
+  margin-left:6px;
+  margin-top:4px;
+  display:none;
+  flex-direction:column;
+  gap:4px;
+}
+.sub-btn{
+  padding:4px 9px;
+  border-radius:999px;
+  border:1px solid rgba(199,169,122,0.7);
+  background:rgba(15,15,15,0.85);
+  color:var(--ink);
+  font-size:12px;
+  cursor:pointer;
+}
+.sub-btn.active{
+  background:#c7a97a;
+  color:#23160c;
+}
+</style>
+</head>
+
+<body>
+<div id="headerBar">World Whisky Map — Amber Palette</div>
+<div id="map"></div>
+
+<!-- -------------------------
+     国旗ボタン
+-------------------------- -->
+<div id="areaButtons">
+
+  <!-- World（テキストのみ） -->
+  <button class="flag-btn" onclick="showWorld()">World</button>
+
+  <!-- Japan -->
+  <button class="flag-btn" onclick="showJapan()">
+    <img src="flags/japan.png" class="flag-icon"> Japan
+  </button>
+
+  <!-- USA -->
+  <button class="flag-btn" onclick="showUSA()">
+    <img src="flags/the_united_states.png" class="flag-icon"> USA
+  </button>
+
+  <!-- Canada -->
+  <button class="flag-btn" onclick="showCanada()">
+    <img src="flags/canada.gif" class="flag-icon"> Canada
+  </button>
+
+  <!-- Ireland -->
+  <button class="flag-btn" onclick="showIreland()">
+    <img src="flags/ireland.png" class="flag-icon"> Ireland
+  </button>
+
+  <!-- Scotland（メイン） -->
+  <button class="flag-btn" onclick="toggleScotlandSub()">
+    <img src="flags/scotland.png" class="flag-icon"> Scotland
+  </button>
+
+  <!-- Scotland 6エリア -->
+  <div id="scotlandSub">
+    <button class="sub-btn" onclick="showSpeyside()">Speyside</button>
+    <button class="sub-btn" onclick="showHighlands()">Highlands</button>
+    <button class="sub-btn" onclick="showLowlands()">Lowlands</button>
+    <button class="sub-btn" onclick="showIslay()">Islay</button>
+    <button class="sub-btn" onclick="showIslands()">Islands</button>
+    <button class="sub-btn" onclick="showCampbeltown()">Campbeltown</button>
+  </div>
+
+  <!-- Others（地球アイコン） -->
+  <button class="flag-btn" onclick="showOthers()">
+    <img src="flags/world.png" class="flag-icon"> Others
+  </button>
+
+</div>
+
+
+<!-- distillery データ（別ファイル） -->
+<script src="distillery-data.js"></script>
+
+<script>
+//=====================================================
+// 地図の初期設定
+//=====================================================
+const map = L.map('map', {
+  zoomControl: true,
+  zoomSnap: 0.5,
+  zoomDelta: 0.5,
+}).setView([20, 0], 2.3);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  minZoom: 2
+}).addTo(map);
+
+let markers = [];
+function clearMarkers(){
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+}
+
+function addAreaMarkers(arr){
+  clearMarkers();
+  let bounds = [];
+
+  arr.forEach(d => {
+    const lat = d.lat, lng = d.lng;
+    if(!lat || !lng) return;
+
+    const hasURL = d.url && d.url.trim() !== '';
+    const radius = hasURL ? 8 : 5;
+    const color  = hasURL ? "#d8a24a" : "#8c6b3b";
+
+    const marker = L.circleMarker([lat, lng], {
+      radius: radius,
+      color: color,
+      fillColor: color,
+      fillOpacity: 0.85,
+      weight: 2
+    }).addTo(map);
+
+    if (hasURL){
+      marker.on('dblclick', () => window.open(d.url, "_blank"));
+    }
+
+    const jp = d.name_jp ?? d.name ?? "";
+    const en = d.name_en ?? d.name ?? "";
+    const label = `
+      <div style="text-align:center;">
+        <div style="font-size:15px; font-weight:bold;">${jp}</div>
+        <div style="font-size:12px; color:#d0c7b7;">${en}</div>
+      </div>
+    `;
+    marker.bindTooltip(label, { direction: 'top' });
+
+    markers.push(marker);
+    bounds.push([lat, lng]);
+  });
+
+  if (bounds.length){
+    const b = L.latLngBounds(bounds);
+    map.fitBounds(b, { padding: [30, 30] });
+  }
+}
+
+
+//=====================================================
+// World ＆ Country 切替
+//=====================================================
+function showWorld(){ addAreaMarkers(worldData); }
+function showJapan(){ addAreaMarkers(japanData); }
+function showUSA(){ addAreaMarkers(usaData); }
+function showCanada(){ addAreaMarkers(canadaData); }
+function showIreland(){ addAreaMarkers(irelandData); }
+function showOthers(){ addAreaMarkers(othersData); }
+
+//=====================================================
+// Scotland（メイン → サブ6エリア）
+//=====================================================
+function toggleScotlandSub(){
+  const s = document.getElementById("scotlandSub");
+  s.style.display = (s.style.display === "flex") ? "none" : "flex";
+}
+
+function showSpeyside(){ addAreaMarkers(speysideData); }
+function showHighlands(){ addAreaMarkers(highlandsData); }
+function showLowlands(){ addAreaMarkers(lowlandsData); }
+function showIslay(){ addAreaMarkers(islayData); }
+function showIslands(){ addAreaMarkers(islandsData); }
+function showCampbeltown(){ addAreaMarkers(campbeltownData); }
+
+
+//=====================================================
+// 初期表示
+//=====================================================
+showWorld();
+</script>
+
+</body>
+</html>

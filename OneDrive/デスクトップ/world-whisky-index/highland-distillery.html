@@ -1,0 +1,479 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Highland Distilleries</title>
+
+<style>
+:root{
+  --bg:#0d0c0b;
+  --panel:#181614;
+  --ink:#f6f1e9;
+  --muted:#b9b2a6;
+  --accent:#c7a97a;
+  --chip:#262320;
+  --border:#332e2a;
+}
+html,body{
+  background:radial-gradient(circle at 40% 15%, #1a1715 0%, #0d0c0b 85%);
+  color:var(--ink);
+  margin:0;
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+}
+.wrap{max-width:1100px; margin:24px auto; padding:0 16px;}
+header{margin-bottom:18px}
+h1{font-size:28px; font-weight:800; margin:0 0 8px; letter-spacing:.02em;}
+.subtitle{color:var(--muted); margin:0 0 18px; line-height:1.6}
+
+.controls{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin:0 0 20px}
+.search{flex:1; min-width:240px}
+input[type="search"]{
+  width:100%; padding:12px 14px; background:#12100f; color:var(--ink);
+  border:1px solid var(--border); border-radius:10px; font-size:15px; outline:none;
+}
+
+.district{margin:30px 0}
+.district>h2{
+  font-size:20px; font-weight:800; color:var(--accent);
+  margin:0 0 10px; padding-bottom:4px; letter-spacing:.02em;
+  border-bottom:1px solid rgba(199,169,122,.25);
+}
+.grid{display:grid; grid-template-columns:repeat(1,minmax(0,1fr)); gap:14px;}
+@media (min-width:580px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (min-width:940px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+
+.card{
+  background:radial-gradient(circle at 30% 20%, #1d1b19 0%, #141210 90%);
+  border:1px solid rgba(90,80,65,.35);
+  border-radius:16px; padding:16px;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.45), 0 2px 5px rgba(0,0,0,.4);
+  transition:transform .15s, box-shadow .25s, border-color .25s;
+}
+.card:hover{
+  transform:translateY(-3px);
+  border-color:rgba(200,180,120,.4);
+  box-shadow:inset 0 0 12px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.45), 0 0 8px rgba(210,180,120,.15);
+}
+.names{display:flex; flex-wrap:wrap; gap:8px 10px; margin-bottom:8px}
+.jp{font-weight:700; font-size:16px}
+.en{font-size:13px; color:var(--muted)}
+.meaning{margin:8px 0 6px; line-height:1.6}
+.meaning-jp{font-size:14.5px; color:#f5f2ec}
+.meaning-en{font-size:13px; color:#c3b693; font-style:italic; margin-top:2px}
+
+.meta{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
+.chip{
+  font-size:11px; color:var(--muted);
+  background:var(--chip);
+  border:1px solid var(--border);
+  padding:4px 8px; border-radius:999px;
+}
+
+footer{
+  color:var(--muted); font-size:12px; margin:28px 0 40px;
+  line-height:1.6; border-top:1px solid rgba(255,255,255,.05);
+  padding-top:10px;
+}
+
+/* ← 戻るボタン（統一型） */
+.back-to-index{
+  position:fixed;
+  top:16px; left:16px;
+  background:#181614; color:#c7a97a;
+  padding:8px 14px;
+  font-weight:700; text-decoration:none;
+  border:1px solid rgba(199,169,122,.4);
+  border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,.4);
+  transition:.25s;
+  z-index:999;
+}
+.back-to-index:hover{
+  background:#1f1c18;
+  color:#fff4e0;
+  transform:translateY(-2px);
+}
+@media(max-width:600px){
+  .back-to-index{top:10px; left:10px; padding:10px 18px; font-size:15px;}
+}
+.nav-links{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin:16px;
+}
+
+.nav-links .back{
+  display:inline-block;
+  width:fit-content;
+  padding:8px 14px;
+  font-size:14px;
+  color:var(--accent);
+  text-decoration:none;
+  background:#181614;
+  border:1px solid var(--border);
+  border-radius:8px;
+  box-shadow:0 3px 6px rgba(0,0,0,.35);
+  transition:all .2s ease;
+}
+
+.nav-links .back:hover{
+  background:#2a241f;
+  border-color:var(--accent);
+  box-shadow:0 4px 12px rgba(215,178,116,.25);
+  transform:translateY(-1px);
+}
+	
+	
+	
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<div class="nav-links">
+  <a href="scotch-index.html" class="back">← Socatch Index </a>
+</div>
+
+
+<header>
+  <h1>ハイランド［Highland］ </h1>
+  <p class="subtitle">各カードに <strong>日本語名／英語名／意味（日本語＋英語）／Founded＋公式URL</strong> を統合。検索は日本語・英語・意味語でヒットします。</p>
+  <div class="controls"><div class="search"><input id="q" type="search" placeholder="検索：例）Glen、hill、川、蒸溜所名…"></div></div>
+</header>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ -->
+<!-- North Highland -->
+<!-- ━━━━━━━━━━━━━━━━━━━━ -->
+<section class="district"><h2>北ハイランド（North Highland）</h2><div class="grid">
+
+  <!-- Balblair -->
+  <article class="card" data-jp="バルブレア" data-en="Balblair" data-meaning="平らな土地の集落 Flat Township">
+    <div class="names"><span class="jp">バルブレア</span><span class="en">Balblair</span></div>
+    <div class="meaning"><div class="meaning-jp">「平らな土地の集落」</div><div class="meaning-en"><em>Flat Township</em></div></div>
+    <div class="meta">
+      <span class="chip">North Highland</span>
+      <span class="chip">Founded: 1790</span>
+      <span class="chip"><a href="https://www.balblair.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Clynelish -->
+  <article class="card" data-jp="クライヌリッシュ" data-en="Clynelish" data-meaning="金色の湿地 Golden Meadow">
+    <div class="names"><span class="jp">クライヌリッシュ</span><span class="en">Clynelish</span></div>
+    <div class="meaning"><div class="meaning-jp">「金色の湿地」</div><div class="meaning-en"><em>Golden Meadow</em></div></div>
+    <div class="meta">
+      <span class="chip">North Highland</span>
+      <span class="chip">Founded: 1819</span>
+      <span class="chip"><a href="https://www.malts.com/en-gb/distilleries/clynelish/" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Dalmore -->
+  <article class="card" data-jp="ダルモア" data-en="Dalmore" data-meaning="広い川辺の草地 Broad River Meadow">
+    <div class="names"><span class="jp">ダルモア</span><span class="en">Dalmore</span></div>
+    <div class="meaning"><div class="meaning-jp">「広い川辺の草地」</div><div class="meaning-en"><em>Broad River Meadow</em></div></div>
+    <div class="meta">
+      <span class="chip">North Highland</span>
+      <span class="chip">Founded: 1839</span>
+      <span class="chip"><a href="https://www.thedalmore.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Glenmorangie -->
+  <article class="card" data-jp="グレンモーレンジ" data-en="Glenmorangie" data-meaning="静寂の谷 Valley of Tranquillity">
+    <div class="names"><span class="jp">グレンモーレンジ</span><span class="en">Glenmorangie</span></div>
+    <div class="meaning"><div class="meaning-jp">「静寂の谷」</div><div class="meaning-en"><em>Valley of Tranquillity</em></div></div>
+    <div class="meta">
+      <span class="chip">North Highland</span>
+      <span class="chip">Founded: 1843</span>
+      <span class="chip"><a href="https://www.glenmorangie.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Wolfburn -->
+  <article class="card" data-jp="ウルフバーン" data-en="Wolfburn" data-meaning="狼の小川 Burn of the Wolf">
+    <div class="names"><span class="jp">ウルフバーン</span><span class="en">Wolfburn</span></div>
+    <div class="meaning"><div class="meaning-jp">「狼の小川」</div><div class="meaning-en"><em>Burn of the Wolf</em></div></div>
+    <div class="meta">
+      <span class="chip">North Highland</span>
+      <span class="chip">Founded: 2013（Original 1821）</span>
+      <span class="chip"><a href="https://wolfburn.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+</div></section>
+
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ -->
+<!-- East Highland -->
+<!-- ━━━━━━━━━━━━━━━━━━━━ -->
+<section class="district"><h2>東ハイランド（East Highland）</h2><div class="grid">
+
+  <!-- Ardmore -->
+  <article class="card" data-jp="アードモア" data-en="Ardmore" data-meaning="大きな丘 Great Hill">
+    <div class="names"><span class="jp">アードモア</span><span class="en">Ardmore</span></div>
+    <div class="meaning"><div class="meaning-jp">「大きな丘」</div><div class="meaning-en"><em>Great Hill</em></div></div>
+    <div class="meta">
+      <span class="chip">East Highland</span>
+      <span class="chip">Founded: 1898</span>
+      <span class="chip"><a href="https://www.ardmorewhisky.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Fettercairn -->
+  <article class="card" data-jp="フェッターケアン" data-en="Fettercairn" data-meaning="石の丘のふもと Foot of the Cairn">
+    <div class="names"><span class="jp">フェッターケアン</span><span class="en">Fettercairn</span></div>
+    <div class="meaning"><div class="meaning-jp">「石の丘のふもと」</div><div class="meaning-en"><em>Foot of the Cairn</em></div></div>
+    <div class="meta">
+      <span class="chip">East Highland</span>
+      <span class="chip">Founded: 1824</span>
+      <span class="chip"><a href="https://www.fettercairnwhisky.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Glendronach -->
+  <article class="card" data-jp="グレンドロナック" data-en="Glendronach" data-meaning="黒イチゴの谷 Valley of Brambles">
+    <div class="names"><span class="jp">グレンドロナック</span><span class="en">Glendronach</span></div>
+    <div class="meaning"><div class="meaning-jp">「黒イチゴの谷」</div><div class="meaning-en"><em>Valley of Brambles</em></div></div>
+    <div class="meta">
+      <span class="chip">East Highland</span>
+      <span class="chip">Founded: 1826</span>
+      <span class="chip"><a href="https://www.glendronachdistillery.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Glen Garioch -->
+  <article class="card" data-jp="グレンギリー" data-en="Glen Garioch" data-meaning="ガリアック谷 Valley of the Garioch">
+    <div class="names"><span class="jp">グレンギリー</span><span class="en">Glen Garioch</span></div>
+    <div class="meaning"><div class="meaning-jp">「ガリアックの谷」</div><div class="meaning-en"><em>Valley of the Garioch</em></div></div>
+    <div class="meta">
+      <span class="chip">East Highland</span>
+      <span class="chip">Founded: 1797</span>
+      <span class="chip"><a href="https://www.glengarioch.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Glenglassaugh -->
+  <article class="card" data-jp="グレングラッサ" data-en="Glenglassaugh" data-meaning="緑の谷谷 Green Glen">
+    <div class="names"><span class="jp">グレングラッサ</span><span class="en">Glenglassaugh</span></div>
+    <div class="meaning"><div class="meaning-jp">「緑の谷」</div><div class="meaning-en"><em>Green Glen</em></div></div>
+    <div class="meta">
+      <span class="chip">East Highland</span>
+      <span class="chip">Founded: 1875</span>
+      <span class="chip"><a href="https://www.glenglassaugh.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- anCnoc -->
+  <article class="card" data-jp="アンノック" data-en="AnCnoc (Knockdhu)" data-meaning="黒い丘 Black Hill">
+    <div class="names"><span class="jp">アンノック</span><span class="en">AnCnoc (Knockdhu)</span></div>
+    <div class="meaning"><div class="meaning-jp">「黒い丘」</div><div class="meaning-en"><em>Black Hill</em></div></div>
+    <div class="meta">
+      <span class="chip">East Highland</span>
+      <span class="chip">Founded: 1894</span>
+      <span class="chip"><a href="https://ancnoc.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Macduff -->
+  <article class="card" data-jp="マクダフ" data-en="Macduff" data-meaning="ダフ家の土地 Land of Duff">
+    <div class="names"><span class="jp">マクダフ</span><span class="en">Macduff</span></div>
+    <div class="meaning"><div class="meaning-jp">「Duff家の土地」</div><div class="meaning-en"><em>Land of Duff</em></div></div>
+    <div class="meta">
+      <span class="chip">East Highland</span>
+      <span class="chip">Founded: 1962</span>
+      <span class="chip"><a href="https://www.dewars.com/beverages/macduff-distillery/" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Royal Lochnagar -->
+  <article class="card" data-jp="ロイヤルロッホナガー" data-en="Royal Lochnagar" data-meaning="岩の湖 Lake of Rocks">
+    <div class="names"><span class="jp">ロイヤル・ロッホナガー</span><span class="en">Royal Lochnagar</span></div>
+    <div class="meaning"><div class="meaning-jp">「岩の湖」</div><div class="meaning-en"><em>Lake of Rocks</em></div></div>
+    <div class="meta">
+      <span class="chip">East Highland</span>
+      <span class="chip">Founded: 1845</span>
+      <span class="chip"><a href="https://www.malts.com/en-gb/distilleries/royal-lochnagar/" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+</div></section>
+
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ -->
+<!-- Central Highland -->
+<!-- ━━━━━━━━━━━━━━━━━━━━ -->
+<section class="district"><h2>中央ハイランド（Central Highland）</h2><div class="grid">
+
+  <!-- Deanston -->
+  <article class="card" data-jp="ディーンストン" data-en="Deanston" data-meaning="ディーン川の町 Town on the River Dean">
+    <div class="names"><span class="jp">ディーンストン</span><span class="en">Deanston</span></div>
+    <div class="meaning"><div class="meaning-jp">「ディーン川の町」</div><div class="meaning-en"><em>Town on the River Dean</em></div></div>
+    <div class="meta">
+      <span class="chip">Central Highland</span>
+      <span class="chip">Founded: 1965</span>
+      <span class="chip"><a href="https://www.deanstonmalt.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Glenturret -->
+  <article class="card" data-jp="グレンタレット" data-en="Glenturret" data-meaning="泉の谷 Valley of the Spring">
+    <div class="names"><span class="jp">グレンタレット</span><span class="en">Glenturret</span></div>
+    <div class="meaning"><div class="meaning-jp">「泉の谷」</div><div class="meaning-en"><em>Valley of the Spring</em></div></div>
+    <div class="meta">
+      <span class="chip">Central Highland</span>
+      <span class="chip">Founded: 1763</span>
+      <span class="chip"><a href="https://www.theglenturret.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Tullibardine -->
+  <article class="card" data-jp="タリバーディン" data-en="Tullibardine" data-meaning="丘の村 Hill Village">
+    <div class="names"><span class="jp">タリバーディン</span><span class="en">Tullibardine</span></div>
+    <div class="meaning"><div class="meaning-jp">「丘の上の村」</div><div class="meaning-en"><em>Village on the Hill</em></div></div>
+    <div class="meta">
+      <span class="chip">Central Highland</span>
+      <span class="chip">Founded: 1949</span>
+      <span class="chip"><a href="https://www.tullibardine.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Loch Lomond -->
+  <article class="card" data-jp="ロッホローモンド" data-en="Loch Lomond" data-meaning="ローモンド湖 Lake Lomond">
+    <div class="names"><span class="jp">ロッホローモンド</span><span class="en">Loch Lomond</span></div>
+    <div class="meaning"><div class="meaning-jp">「ローモンド湖」</div><div class="meaning-en"><em>Lake Lomond</em></div></div>
+    <div class="meta">
+      <span class="chip">Central Highland</span>
+      <span class="chip">Founded: 1965</span>
+      <span class="chip"><a href="https://www.lochlomondwhiskies.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+</div></section>
+
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ -->
+<!-- South Highland -->
+<!-- ━━━━━━━━━━━━━━━━━━━━ -->
+<section class="district"><h2>南ハイランド（South Highland）</h2><div class="grid">
+
+  <!-- Aberfeldy -->
+  <article class="card" data-jp="アバフェルディ" data-en="Aberfeldy" data-meaning="神聖な泉 Holy Pool">
+    <div class="names"><span class="jp">アバフェルディ</span><span class="en">Aberfeldy</span></div>
+    <div class="meaning"><div class="meaning-jp">「神聖な泉」</div><div class="meaning-en"><em>Holy Pool</em></div></div>
+    <div class="meta">
+      <span class="chip">South Highland</span>
+      <span class="chip">Founded: 1896</span>
+      <span class="chip"><a href="https://www.dewars.com/beverages/aberfeldy/" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Blair Athol -->
+  <article class="card" data-jp="ブレアアソール" data-en="Blair Athol" data-meaning="アソールの平野 Plain of Atholl">
+    <div class="names"><span class="jp">ブレアアソール</span><span class="en">Blair Athol</span></div>
+    <div class="meaning"><div class="meaning-jp">「アソールの平野」</div><div class="meaning-en"><em>Plain of Atholl</em></div></div>
+    <div class="meta">
+      <span class="chip">South Highland</span>
+      <span class="chip">Founded: 1798</span>
+      <span class="chip"><a href="https://www.malts.com/en-gb/distilleries/blair-athol/" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Edradour -->
+  <article class="card" data-jp="エドラダワー" data-en="Edradour" data-meaning="二つの小川の間 Between Two Burns">
+    <div class="names"><span class="jp">エドラダワー</span><span class="en">Edradour</span></div>
+    <div class="meaning"><div class="meaning-jp">「二つの小川の間」</div><div class="meaning-en"><em>Between Two Burns</em></div></div>
+    <div class="meta">
+      <span class="chip">South Highland</span>
+      <span class="chip">Founded: 1825</span>
+      <span class="chip"><a href="https://www.edradour.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Glengoyne -->
+  <article class="card" data-jp="グレンゴイン" data-en="Glengoyne" data-meaning="鍛冶屋の谷 Valley of the Smith">
+    <div class="names"><span class="jp">グレンゴイン</span><span class="en">Glengoyne</span></div>
+    <div class="meaning"><div class="meaning-jp">「鍛冶屋の谷」</div><div class="meaning-en"><em>Valley of the Smith</em></div></div>
+    <div class="meta">
+      <span class="chip">South Highland</span>
+      <span class="chip">Founded: 1833</span>
+      <span class="chip"><a href="https://www.glengoyne.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+</div></section>
+
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ -->
+<!-- West Highland -->
+<!-- ━━━━━━━━━━━━━━━━━━━━ -->
+<section class="district"><h2>西ハイランド（West Highland）</h2><div class="grid">
+
+  <!-- Ardnamurchan -->
+  <article class="card" data-jp="アードナムルッカン" data-en="Ardnamurchan" data-meaning="海の戦士たちの岬 Headland of the Seamen">
+    <div class="names"><span class="jp">アードナムルッカン</span><span class="en">Ardnamurchan</span></div>
+    <div class="meaning"><div class="meaning-jp">「海の戦士たちの岬」</div><div class="meaning-en"><em>Headland of the Seamen</em></div></div>
+    <div class="meta">
+      <span class="chip">West Highland</span>
+      <span class="chip">Founded: 2014</span>
+      <span class="chip"><a href="https://www.adelphidistillery.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Ben Nevis -->
+  <article class="card" data-jp="ベンネヴィス" data-en="Ben Nevis" data-meaning="雲の山 Mountain of Heaven">
+    <div class="names"><span class="jp">ベン・ネヴィス</span><span class="en">Ben Nevis</span></div>
+    <div class="meaning"><div class="meaning-jp">「雲の山」</div><div class="meaning-en"><em>Mountain of Heaven</em></div></div>
+    <div class="meta">
+      <span class="chip">West Highland</span>
+      <span class="chip">Founded: 1825</span>
+      <span class="chip"><a href="https://www.bennevisdistillery.com" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+  <!-- Oban -->
+  <article class="card" data-jp="オーバン" data-en="Oban" data-meaning="小さな湾 Little Bay">
+    <div class="names"><span class="jp">オーバン</span><span class="en">Oban</span></div>
+    <div class="meaning"><div class="meaning-jp">「小さな湾」</div><div class="meaning-en"><em>Little Bay</em></div></div>
+    <div class="meta">
+      <span class="chip">West Highland</span>
+      <span class="chip">Founded: 1794</span>
+      <span class="chip"><a href="https://www.malts.com/en-gb/distilleries/oban/" target="_blank">Official Site</a></span>
+    </div>
+  </article>
+
+</div></section>
+
+<footer>
+※ ゲール語由来の語源は諸説あり。検索は日本語・英語・意味すべて対象。  
+※ Speyside と完全統一デザイン。
+</footer>
+</div>
+
+<!-- 🔍 検索ロジック（統一版） -->
+<script>
+const q = document.getElementById('q');
+const cards = [...document.querySelectorAll('.card')];
+const districts = [...document.querySelectorAll('.district')];
+const norm = s => (s || '').toLowerCase();
+
+q.addEventListener('input', () => {
+  const term = norm(q.value.trim());
+  cards.forEach(c => {
+    const hit = !term ||
+      norm(c.dataset.jp).includes(term) ||
+      norm(c.dataset.en).includes(term) ||
+      norm(c.dataset.meaning).includes(term);
+    c.style.display = hit ? '' : 'none';
+  });
+  districts.forEach(sec => {
+    const visible = [...sec.querySelectorAll('.card')].some(c => c.style.display !== 'none');
+    sec.style.display = visible ? '' : 'none';
+  });
+});
+</script>
+
+</body>
+</html>

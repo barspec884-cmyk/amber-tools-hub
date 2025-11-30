@@ -1,0 +1,286 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Islay Distilleries</title>
+
+<style>
+:root{
+  --bg:#0d0c0b;
+  --panel:#181614;
+  --ink:#f6f1e9;
+  --muted:#b9b2a6;
+  --accent:#c7a97a;
+  --chip:#262320;
+  --border:#332e2a;
+}
+html,body{
+  background:radial-gradient(circle at 40% 15%, #1a1715 0%, #0d0c0b 85%);
+  color:var(--ink);
+  margin:0;
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+}
+.wrap{max-width:1100px; margin:24px auto; padding:0 16px;}
+header{margin-bottom:18px}
+h1{font-size:28px; font-weight:800; letter-spacing:.02em; margin:0 0 8px}
+.subtitle{color:var(--muted); margin:0 0 18px; line-height:1.6}
+
+.controls{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin:0 0 20px}
+.search{flex:1; min-width:240px}
+input[type="search"]{
+  width:100%; padding:12px 14px; background:#12100f; color:var(--ink);
+  border:1px solid var(--border); border-radius:10px; font-size:15px; outline:none;
+}
+
+.district{margin:30px 0}
+.district>h2{
+  font-size:20px; font-weight:800; color:var(--accent);
+  margin:0 0 10px; letter-spacing:.02em;
+  border-bottom:1px solid rgba(199,169,122,.25); padding-bottom:4px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(1,minmax(0,1fr));
+  gap:14px;
+}
+@media (min-width:580px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (min-width:940px){
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+
+.card{
+  background:radial-gradient(circle at 30% 20%, #1d1b19 0%, #141210 90%);
+  border:1px solid rgba(90,80,65,.35);
+  border-radius:16px; padding:16px;
+  box-shadow:inset 0 0 10px rgba(0,0,0,.45), 0 2px 5px rgba(0,0,0,.4);
+  transition:transform .15s, box-shadow .25s, border-color .25s;
+}
+.card:hover{
+  transform:translateY(-3px);
+  border-color:rgba(200,180,120,.4);
+  box-shadow:inset 0 0 12px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.45), 0 0 8px rgba(210,180,120,.15);
+}
+
+.names{display:flex; flex-wrap:wrap; gap:8px 10px; align-items:baseline; margin-bottom:8px}
+.jp{font-weight:700; font-size:16px}
+.en{font-size:13px; color:var(--muted)}
+
+.meaning{margin:8px 0 6px; line-height:1.6}
+.meaning-jp{font-size:14.5px; color:#f5f2ec}
+.meaning-en{font-size:13px; color:#c3b693; font-style:italic; margin-top:2px}
+
+.desc{font-size:13.5px; color:var(--muted); line-height:1.7; margin-top:6px}
+
+.extra{
+  margin-top:8px;
+  display:flex; gap:12px; flex-wrap:wrap;
+  font-size:13px; color:#d6c9b5;
+}
+.extra a{
+  color:#c7a97a;
+  text-decoration:none;
+  border-bottom:1px dotted rgba(199,169,122,.45);
+}
+.extra a:hover{opacity:.8;}
+
+.meta{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
+.chip{
+  font-size:11px; color:var(--muted);
+  background:var(--chip);
+  border:1px solid var(--border);
+  padding:4px 8px; border-radius:999px;
+}
+
+footer{
+  color:var(--muted); font-size:12px;
+  margin:28px 0 40px; line-height:1.6;
+  border-top:1px solid rgba(255,255,255,.05); padding-top:10px;
+}
+
+/* 戻るボタン */
+.nav-links{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin:16px;
+}
+.nav-links .back{
+  display:inline-block;
+  width:fit-content;
+  padding:8px 14px;
+  font-size:14px;
+  color:var(--accent);
+  text-decoration:none;
+  background:#181614;
+  border:1px solid var(--border);
+  border-radius:8px;
+  box-shadow:0 3px 6px rgba(0,0,0,.35);
+  transition:all .2s ease;
+}
+.nav-links .back:hover{
+  background:#2a241f;
+  border-color:var(--accent);
+  box-shadow:0 4px 12px rgba(215,178,116,.25);
+  transform:translateY(-1px);
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<div class="nav-links">
+  <a href="scotch-index.html" class="back">← Socatch Index</a>
+</div>
+
+<header>
+  <h1>アイラ［Islay］</h1>
+  <p class="subtitle">
+    日本語名／英語名／語源／説明／創業年／公式サイトを収録。<br>
+    検索は日本語・英語・語源すべてに対応しています。
+  </p>
+  <div class="controls">
+    <div class="search">
+      <input id="q" type="search" placeholder="検索：例）peat, Bowmore, smoke, Ardbeg…">
+    </div>
+  </div>
+</header>
+
+<section class="district">
+<h2>アイラ島（Islay）</h2>
+<div class="grid">
+
+<!-- Ardbeg（修正済） -->
+<article class="card" data-jp="アードベッグ" data-en="Ardbeg" data-meaning="小さな岬 Little Height">
+  <div class="names"><span class="jp">アードベッグ</span><span class="en">Ardbeg</span></div>
+  <div class="meaning"><div class="meaning-jp">「小さな岬」</div><div class="meaning-en"><em>Little Height</em></div></div>
+  <div class="desc">強烈なピートとスモーク。アイラを代表するヘビリーピーテッド。</div>
+  <div class="extra"><a href="https://www.ardbeg.com/visit-us/distillery" target="_blank">Official Website</a></div>
+  <div class="meta"><span class="chip">Founded: 1815</span></div>
+</article>
+
+<!-- Bowmore -->
+<article class="card" data-jp="ボウモア" data-en="Bowmore" data-meaning="大きな堤防 Big Reef">
+  <div class="names"><span class="jp">ボウモア</span><span class="en">Bowmore</span></div>
+  <div class="meaning"><div class="meaning-jp">「大きな堤防」</div><div class="meaning-en"><em>Big Reef</em></div></div>
+  <div class="desc">バランスの良いピートと花の香り。最古の蒸留所の一つ。</div>
+  <div class="extra"><a href="http://www.bowmore.com/" target="_blank">Official Website</a></div>
+  <div class="meta"><span class="chip">Founded: 1779</span></div>
+</article>
+
+<!-- Bruichladdich -->
+<article class="card" data-jp="ブルックラディ" data-en="Bruichladdich" data-meaning="海辺の丘の斜面 Bank by the Shore">
+  <div class="names"><span class="jp">ブルックラディ</span><span class="en">Bruichladdich</span></div>
+  <div class="meaning"><div class="meaning-jp">「海辺の丘の斜面」</div><div class="meaning-en"><em>Bank by the Shore</em></div></div>
+  <div class="desc">ヘビリーピーテッドのPort CharlotteやOctomoreも製造。</div>
+  <div class="extra"><a href="https://www.bruichladdich.com/" target="_blank">Official Website</a></div>
+  <div class="meta"><span class="chip">Founded: 1881</span></div>
+</article>
+
+<!-- Bunnahabhain（http版） -->
+<article class="card" data-jp="ブナハーブン" data-en="Bunnahabhain" data-meaning="河口の集落 Mouth River Village">
+  <div class="names"><span class="jp">ブナハーブン</span><span class="en">Bunnahabhain</span></div>
+  <div class="meaning"><div class="meaning-jp">「河口の集落」</div><div class="meaning-en"><em>Mouth River Village</em></div></div>
+  <div class="desc">アイラでは珍しくノンピート中心で穏やか。</div>
+  <div class="extra"><a href="http://bunnahabhain.com/" target="_blank">Official Website</a></div>
+  <div class="meta"><span class="chip">Founded: 1881</span></div>
+</article>
+
+<!-- Caol Ila（discovering-distilleries版） -->
+<article class="card" data-jp="カリラ" data-en="Caol Ila" data-meaning="海峡の海峡 Sound of Islay">
+  <div class="names"><span class="jp">カリラ</span><span class="en">Caol Ila</span></div>
+  <div class="meaning"><div class="meaning-jp">「アイラ海峡」</div><div class="meaning-en"><em>Sound of Islay</em></div></div>
+  <div class="desc">柔らかなスモークとクリーンな味わいで人気。</div>
+  <div class="extra"><a href="https://www.discovering-distilleries.com/caolila/" target="_blank">Official Website</a></div>
+  <div class="meta"><span class="chip">Founded: 1846</span></div>
+</article>
+
+<!-- Kilchoman -->
+<article class="card" data-jp="キルホーマン" data-en="Kilchoman" data-meaning="教会の丘 Church Hill">
+  <div class="names"><span class="jp">キルホーマン</span><span class="en">Kilchoman</span></div>
+  <div class="meaning"><div class="meaning-jp">「教会の丘」</div><div class="meaning-en"><em>Church Hill</em></div></div>
+  <div class="desc">2005年創業。自社栽培麦〜蒸留まで行うファームディスティラリー。</div>
+  <div class="extra"><a href="https://www.kilchomandistillery.com/" target="_blank">Official Website</a></div>
+  <div class="meta"><span class="chip">Founded: 2005</span></div>
+</article>
+
+<!-- Lagavulin（discovering-distilleries版） -->
+<article class="card" data-jp="ラガヴーリン" data-en="Lagavulin" data-meaning="水車小屋の谷 Valley of the Mill">
+  <div class="names"><span class="jp">ラガヴーリン</span><span class="en">Lagavulin</span></div>
+  <div class="meaning"><div class="meaning-jp">「水車小屋の谷」</div><div class="meaning-en"><em>Valley of the Mill</em></div></div>
+  <div class="desc">分厚いスモークと複雑な旨味。強烈な個性で人気。</div>
+  <div class="extra"><a href="https://www.discovering-distilleries.com/lagavulin/" target="_blank">Official Website</a></div>
+  <div class="meta"><span class="chip">Founded: 1816</span></div>
+</article>
+
+<!-- Laphroaig -->
+<article class="card" data-jp="ラフロイグ" data-en="Laphroaig" data-meaning="広い湾 Broad Bay">
+  <div class="names"><span class="jp">ラフロイグ</span><span class="en">Laphroaig</span></div>
+  <div class="meaning"><div class="meaning-jp">「広い湾」</div><div class="meaning-en"><em>Broad Bay</em></div></div>
+  <div class="desc">薬品・海藻・強烈なピート。唯一無二の存在感。</div>
+  <div class="extra"><a href="http://www.laphroaig.com/" target="_blank">Official Website</a></div>
+  <div class="meta"><span class="chip">Founded: 1815</span></div>
+</article>
+
+<!-- Port Charlotte -->
+<article class="card" data-jp="ポートシャーロット" data-en="Port Charlotte" data-meaning="シャーロット港 Port of Charlotte">
+  <div class="names"><span class="jp">ポートシャーロット</span><span class="en">Port Charlotte</span></div>
+  <div class="meaning"><div class="meaning-jp">「シャーロット港」</div><div class="meaning-en"><em>Port of Charlotte</em></div></div>
+  <div class="desc">ブルックラディが生む別ブランド。力強いピート。</div>
+  <div class="extra"><a href="https://www.bruichladdich.com/" target="_blank">Official Website</a></div>
+  <div class="meta"><span class="chip">Founded: 1881</span></div>
+</article>
+
+<!-- Port Ellen -->
+<article class="card" data-jp="ポートエレン" data-en="Port Ellen" data-meaning="エレン港 Port of Ellen">
+  <div class="names"><span class="jp">ポートエレン</span><span class="en">Port Ellen</span></div>
+  <div class="meaning"><div class="meaning-jp">「エレン港」</div><div class="meaning-en"><em>Port of Ellen</em></div></div>
+  <div class="desc">1983年閉鎖→復活予定の伝説的蒸留所。</div>
+  <div class="extra"><a href="https://www.diageo.com" target="_blank">関連情報</a></div>
+  <div class="meta"><span class="chip">Founded: 1825</span></div>
+</article>
+
+</div>
+</section>
+
+<footer>
+※ 語源・意味は主にゲール語由来で諸説あり。<br>
+※ 検索は日本語・英語・意味（英語/日本語）に対応しています。
+</footer>
+
+</div><!-- wrap -->
+
+<script>
+const q = document.getElementById('q');
+const cards = [...document.querySelectorAll('.card')];
+const districts = [...document.querySelectorAll('.district')];
+
+function norm(s){ return (s||'').toLowerCase(); }
+
+q.addEventListener('input',()=>{
+  const term = norm(q.value.trim());
+
+  cards.forEach(c=>{
+    const hit =
+      !term ||
+      norm(c.dataset.jp).includes(term) ||
+      norm(c.dataset.en).includes(term) ||
+      norm(c.dataset.meaning).includes(term);
+
+    c.style.display = hit ? '' : 'none';
+  });
+
+  districts.forEach(sec=>{
+    const visible = [...sec.querySelectorAll('.card')]
+      .some(c => c.style.display !== 'none');
+    sec.style.display = visible ? '' : 'none';
+  });
+});
+</script>
+
+</body>
+</html>

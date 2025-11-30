@@ -1,0 +1,347 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Whisky Bottlers — ボトラーズ一覧</title>
+<style>
+:root {
+  --bg:#0f0e0d;
+  --ink:#f6f1e9;
+  --accent:#d7b274;
+  --border:#2f2a25;
+}
+body {
+  margin:0;
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.7;
+}
+h1 {
+  text-align:center;
+  font-size:26px;
+  color:var(--accent);
+  margin-top:10px;
+  letter-spacing:.04em;
+}
+.subtitle {
+  text-align:center;
+  color:#c6b8a2;
+  font-size:15px;
+  margin-bottom:10px;
+}
+.back-btn {
+  display:inline-block;
+  margin:4px;
+  padding:8px 16px;
+  border:1px solid rgba(199,169,122,.4);
+  border-radius:8px;
+  background:#181614;
+  color:var(--accent);
+  text-decoration:none;
+  font-weight:600;
+  transition:all .2s;
+}
+.back-btn:hover {background:#1f1b17;color:#fff4e0;}
+@media(max-width:600px){
+  .back-btn{display:block;width:100%;text-align:center;margin-bottom:8px;}
+}
+
+/* 固定ヘッダー */
+header {
+  position:sticky;
+  top:0;
+  background:rgba(15,14,13,0.96);
+  backdrop-filter:blur(6px);
+  padding:10px 10px 6px;
+  z-index:10;
+  border-bottom:1px solid rgba(215,178,116,0.25);
+}
+.searchbar { text-align:center; margin-top:4px; }
+.searchbar input {
+  width:90%;
+  max-width:480px;
+  padding:10px;
+  border-radius:6px;
+  border:1px solid var(--accent);
+  background:#181614;
+  color:var(--ink);
+  font-size:16px;
+}
+
+/* A〜Zナビ */
+.az-nav {
+  position:sticky;
+  top:80px;
+  z-index:9;
+  background:rgba(15,14,13,0.95);
+  text-align:center;
+  padding:6px 4px;
+  overflow-x:auto;
+  white-space:nowrap;
+  border-bottom:1px solid rgba(215,178,116,0.25);
+}
+.az-nav a {
+  color:#d7b274;
+  margin:0 4px;
+  font-weight:600;
+  text-decoration:none;
+  display:inline-block;
+}
+.az-nav a:hover {color:#fff4e0;text-decoration:underline;}
+
+/* リスト */
+main#list {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;
+  padding:20px;
+}
+.item {
+  background:#1b1a19;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:12px;
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.item:hover {transform:translateY(-3px);box-shadow:0 6px 14px rgba(0,0,0,.5);}
+.ja {font-size:15px;color:#f6f1e9;font-weight:600;}
+.en {font-size:13px;color:#c7bfa8;margin-top:3px;}
+footer {
+  text-align:center;
+  margin:40px 0 20px;
+  color:#b9b2a6;
+  font-size:0.8rem;
+}
+.section-title {
+  grid-column:1 / -1;
+  font-size:18px;
+  font-weight:700;
+  color:#d7b274;
+  margin-top:18px;
+  border-bottom:1px solid rgba(215,178,116,0.3);
+  padding-bottom:4px;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>Whisky Bottlers</h1>
+  <p class="subtitle">独立系ボトラーズ一覧 — 日本語 / 英語で検索可能</p>
+  <div style="text-align:center;">
+    <a href="index.html" class="back-btn">← World Whisky Index に戻る</a>
+  </div>
+  <div class="searchbar">
+    <input type="text" id="search" placeholder="検索...（日本語・英語どちらでも）">
+  </div>
+</header>
+
+<!-- 🔤 A〜Zナビ -->
+<div class="az-nav">
+  <a href="#A">A</a><a href="#B">B</a><a href="#C">C</a><a href="#D">D</a>
+  <a href="#E">E</a><a href="#F">F</a><a href="#G">G</a><a href="#H">H</a>
+  <a href="#I">I</a><a href="#J">J</a><a href="#K">K</a><a href="#L">L</a>
+  <a href="#M">M</a><a href="#N">N</a><a href="#O">O</a><a href="#P">P</a>
+  <a href="#Q">Q</a><a href="#R">R</a><a href="#S">S</a><a href="#T">T</a>
+  <a href="#U">U</a><a href="#V">V</a><a href="#W">W</a><a href="#X">X</a>
+  <a href="#Y">Y</a><a href="#Z">Z</a>
+</div>
+
+<!-- 📜 リスト（A〜Z分類・誤字修正済み） -->
+<main id="list">
+
+<!-- ==== A ==== -->
+<div id="A" class="section-title">A</div>
+<div class="item"><div class="ja">ラトレー</div><div class="en">A.D. RATTRAY</div></div>
+<div class="item"><div class="ja">アクラ</div><div class="en">ACLA</div></div>
+<div class="item"><div class="ja">エイコーン</div><div class="en">ACORN</div></div>
+<div class="item"><div class="ja">アデルフィ</div><div class="en">ADELPHI</div></div>
+<div class="item"><div class="ja">アランビック クラシック</div><div class="en">ALAMBIC CLASSIQUE</div></div>
+<div class="item"><div class="ja">アレクサンダー マレー</div><div class="en">ALEXANDER MURRAY</div></div>
+<div class="item"><div class="ja">アリスター ウォーカー</div><div class="en">ALISTAIR WALKER</div></div>
+<div class="item"><div class="ja">アンガス ダンディ</div><div class="en">ANGUS DUNDEE</div></div>
+<div class="item"><div class="ja">アクア ヴィタエ</div><div class="en">AQUA VITAE</div></div>
+<div class="item"><div class="ja">アーカイヴス</div><div class="en">ARCHIVES</div></div>
+<div class="item"><div class="ja">アレン トレーディング</div><div class="en">AREN TRADING</div></div>
+<div class="item"><div class="ja">アスタモリス</div><div class="en">ASTA MORRIS</div></div>
+
+<!-- ==== B ==== -->
+<div id="B" class="section-title">B</div>
+<div class="item"><div class="ja">ベリーブラザーズ＆ラッド</div><div class="en">BERRY BROS. & RUDD</div></div>
+<div class="item"><div class="ja">ブラックアダー</div><div class="en">BLACKADDER</div></div>
+
+<!-- ==== C ==== -->
+<div id="C" class="section-title">C</div>
+<div class="item"><div class="ja">クリスチャン ダリー</div><div class="en">C. DULLY</div></div>
+<div class="item"><div class="ja">ケイデンヘッド</div><div class="en">CADENHEAD'S</div></div>
+<div class="item"><div class="ja">クラクストンズ</div><div class="en">CLAXTON'S</div></div>
+<div class="item"><div class="ja">コンパス ボックス</div><div class="en">COMPASS BOX</div></div>
+
+<!-- ==== D ==== -->
+<div id="D" class="section-title">D</div>
+<div class="item"><div class="ja">デカデントドリンクス</div><div class="en">DECADENT DRINKS</div></div>
+<div class="item"><div class="ja">ダグラス レイン</div><div class="en">DOUGLAS LAING</div></div>
+<div class="item"><div class="ja">ドラムフール</div><div class="en">DRAMFOOL</div></div>
+<div class="item"><div class="ja">ドラムラッド</div><div class="en">DRAMLAD & CO.</div></div>
+<div class="item"><div class="ja">ダン ベーガン</div><div class="en">DUN BHEAGAN</div></div>
+<div class="item"><div class="ja">ダン イーダン</div><div class="en">DUN EIDEANN</div></div>
+<div class="item"><div class="ja">ダンカン テイラー</div><div class="en">DUNCAN TAYLOR</div></div>
+
+<!-- ==== E ==== -->
+<div id="E" class="section-title">E</div>
+<div class="item"><div class="ja">エディション スピリッツ</div><div class="en">EDITION SPIRITS</div></div>
+<div class="item"><div class="ja">エリクサー ディスティラーズ</div><div class="en">ELIXIR DISTILLERS</div></div>
+<div class="item"><div class="ja">イーパワー</div><div class="en">EPOWER</div></div>
+<div class="item"><div class="ja">イースピリッツ</div><div class="en">ESPIRITS TRADING</div></div>
+<div class="item"><div class="ja">エクスクルーシヴ モルツ</div><div class="en">EXCLUSIVE MALTS</div></div>
+
+<!-- ==== F ==== -->
+<div id="F" class="section-title">F</div>
+<div class="item"><div class="ja">ファーストカスク</div><div class="en">FIRST CASK</div></div>
+
+<!-- ==== G ==== -->
+<div id="G" class="section-title">G</div>
+<div class="item"><div class="ja">ジェネラル ウイスキー トレーダーズ</div><div class="en">GENERAL WHISKY TRADERS</div></div>
+<div class="item"><div class="ja">グローバルウイスキー</div><div class="en">GLOBAL WHISKY</div></div>
+<div class="item"><div class="ja">ゴールデン カスク</div><div class="en">GOLDEN CASK</div></div>
+<div class="item"><div class="ja">ゴードン&マクファイル</div><div class="en">GORDON & MACPHAIL</div></div>
+
+<!-- ==== H ==== -->
+<div id="H" class="section-title">H</div>
+<div class="item"><div class="ja">ハートブラザーズ</div><div class="en">HART BROTHERS</div></div>
+<div class="item"><div class="ja">ヒドゥン スピリッツ</div><div class="en">HIDDEN SPIRITS</div></div>
+<div class="item"><div class="ja">ハイスピリッツ</div><div class="en">HIGH SPIRITS</div></div>
+<div class="item"><div class="ja">ハウス オブ ヘイゼルウッド</div><div class="en">HOUSE OF HAZELWOOD</div></div>
+<div class="item"><div class="ja">ハウス オブ マッカラム</div><div class="en">HOUSE OF McCALLUM</div></div>
+<div class="item"><div class="ja">ハンターレイン</div><div class="en">HUNTER LAING</div></div>
+
+<!-- ==== I ==== -->
+<div id="I" class="section-title">I</div>
+<div class="item"><div class="ja">イアン マクロード</div><div class="en">IAN MACLEOD</div></div>
+
+<!-- ==== J ==== -->
+<div id="J" class="section-title">J</div>
+<div class="item"><div class="ja">ジャック ウィバーズ</div><div class="en">JACK WIBERS</div></div>
+
+<!-- ==== K ==== -->
+<div id="K" class="section-title">K</div>
+<div class="item"><div class="ja">乾杯会</div><div class="en">KANPAIKAI</div></div>
+<div class="item"><div class="ja">キングスバリー</div><div class="en">KINGSBURY</div></div>
+<div class="item"><div class="ja">京都ファインワイン&スピリッツ</div><div class="en">KYOTO FINE WINE AND SPIRITS</div></div>
+
+<!-- ==== L ==== -->
+<div id="L" class="section-title">L</div>
+<div class="item"><div class="ja">ラ メゾン デュ ウイスキー</div><div class="en">LA MAISON DU WHISKY</div></div>
+<div class="item"><div class="ja">レディ オブ ザ グレン</div><div class="en">LADY OF THE GLEN</div></div>
+<div class="item"><div class="ja">リキッド サン</div><div class="en">LIQUID SUN</div></div>
+
+<!-- ==== M ==== -->
+<div id="M" class="section-title">M</div>
+<div class="item"><div class="ja">マキロップ チョイス</div><div class="en">MACKILLOP'S CHOICE</div></div>
+<div class="item"><div class="ja">モルトバーン</div><div class="en">MALTBARN</div></div>
+<div class="item"><div class="ja">モルツ オブ スコットランド</div><div class="en">MALTS OF SCOTLAND</div></div>
+<div class="item"><div class="ja">マスター オブ モルト</div><div class="en">MASTER OF MALT</div></div>
+<div class="item"><div class="ja">メドウサイド</div><div class="en">MEADOWSIDE</div></div>
+<div class="item"><div class="ja">ムーン インポート</div><div class="en">MOON IMPORT</div></div>
+<div class="item"><div class="ja">モリソン スコッチ ウイスキー</div><div class="en">MORRISON SCOTCH WHISKY</div></div>
+<div class="item"><div class="ja">モスバーン</div><div class="en">MOSSBURN</div></div>
+<div class="item"><div class="ja">マーレイ マクダヴィッド</div><div class="en">MURRAY McDAVID</div></div>
+<div class="item"><div class="ja">マイ ネーム イズ ウイスキー</div><div class="en">MY NAME IS WHISKY</div></div>
+
+<!-- ==== N ==== -->
+<div id="N" class="section-title">N</div>
+<div class="item"><div class="ja">ノース スター</div><div class="en">NORTH STAR</div></div>
+
+<!-- ==== O ==== -->
+<div id="O" class="section-title">O</div>
+<!-- （該当なし） -->
+
+<!-- ==== P ==== -->
+<div id="P" class="section-title">P</div>
+<!-- （該当なし） -->
+
+<!-- ==== Q ==== -->
+<div id="Q" class="section-title">Q</div>
+<!-- （該当なし） -->
+
+<!-- ==== R ==== -->
+<div id="R" class="section-title">R</div>
+<div class="item"><div class="ja">レスト＆ビー サンクフル</div><div class="en">REST & BE THANKFUL</div></div>
+
+<!-- ==== S ==== -->
+<div id="S" class="section-title">S</div>
+<div class="item"><div class="ja">サマローリ</div><div class="en">SAMAROLI</div></div>
+<div class="item"><div class="ja">サマローリ マサム</div><div class="en">SAMAROLI - MASAM</div></div>
+<div class="item"><div class="ja">ザンジバー</div><div class="en">SANSIBAR</div></div>
+<div class="item"><div class="ja">スコッチ モルト 販売</div><div class="en">SCOTCH MALT SALES</div></div>
+<div class="item"><div class="ja">スコッチ ユニバース</div><div class="en">SCOTCH UNIVERSE</div></div>
+<div class="item"><div class="ja">シグナトリー</div><div class="en">SIGNATORY</div></div>
+<div class="item"><div class="ja">シルバー シール</div><div class="en">SILVER SEAL</div></div>
+<div class="item"><div class="ja">シングル カスク ネーション</div><div class="en">SINGLE CASK NATION</div></div>
+<div class="item"><div class="ja">スヴェンスカ エルドヴァッテン</div><div class="en">SVENSKA ELDVATTEN</div></div>
+<div class="item"><div class="ja">スウェル ド スピリッツ</div><div class="en">SWELL DE SPIRITS</div></div>
+
+<!-- ==== T ==== -->
+<div id="T" class="section-title">T</div>
+<div class="item"><div class="ja">キャラクター オブ アイラ</div><div class="en">THE CHARACTER OF ISLAY</div></div>
+<div class="item"><div class="ja">ハイランダーイン ボトリング</div><div class="en">THE HIGHLANDER INN'S BOTTLING</div></div>
+<div class="item"><div class="ja">モルト ウイスキー カンパニー</div><div class="en">THE MALT WHISKY CO.</div></div>
+<div class="item"><div class="ja">ネクター</div><div class="en">THE NECTAR</div></div>
+<div class="item"><div class="ja">スコッチ モルト ウイスキー ソサエティ</div><div class="en">THE SCOTCH MALT WHISKY SOCIETY</div></div>
+<div class="item"><div class="ja">スコッチ シングル モルト サークル</div><div class="en">THE SCOTCH SINGLE MALT CIRCLE</div></div>
+<div class="item"><div class="ja">シングル キャスク</div><div class="en">THE SINGLE CASK</div></div>
+<div class="item"><div class="ja">ヴィンテージ モルト ウイスキー</div><div class="en">THE VINTAGE MALT WHISKY</div></div>
+<div class="item"><div class="ja">ウイスキー エージェンシー</div><div class="en">THE WHISKY AGENCY</div></div>
+<div class="item"><div class="ja">ウイスキー フープ</div><div class="en">THE WHISKY HOOP</div></div>
+<div class="item"><div class="ja">ウィスキー ファインド</div><div class="en">THE WHISKYFIND</div></div>
+<div class="item"><div class="ja">トンプソン ブラザーズ</div><div class="en">THOMPSON BROS</div></div>
+<div class="item"><div class="ja">スリー リバーズ</div><div class="en">THREE RIVERS</div></div>
+
+<!-- ==== U ==== -->
+<div id="U" class="section-title">U</div>
+<div class="item"><div class="ja">ユナイテッド ディスティラーズ</div><div class="en">UD</div></div>
+
+<!-- ==== V ==== -->
+<div id="V" class="section-title">V</div>
+<div class="item"><div class="ja">ヴァリンチ＆マレット</div><div class="en">VALINCH & MALLET</div></div>
+<div class="item"><div class="ja">ヴェリエ</div><div class="en">VELIER</div></div>
+<div class="item"><div class="ja">ヴィジュアル フレーバー</div><div class="en">VISUAL FLAVOUR</div></div>
+
+<!-- ==== W ==== -->
+<div id="W" class="section-title">W</div>
+<div class="item"><div class="ja">ワット ウイスキー</div><div class="en">WATT WHISKY</div></div>
+<div class="item"><div class="ja">ウィームス</div><div class="en">WEMYSS</div></div>
+<div class="item"><div class="ja">ウイスク イー</div><div class="en">WHISK-E</div></div>
+<div class="item"><div class="ja">ウィスキー ファスル</div><div class="en">WHISKY FÄSSLE</div></div>
+<div class="item"><div class="ja">ウィルソン&モーガン</div><div class="en">WILSON & MORGAN</div></div>
+
+<!-- ==== Y ==== -->
+<div id="Y" class="section-title">Y</div>
+<!-- （該当なし） -->
+
+<!-- ==== Z ==== -->
+<div id="Z" class="section-title">Z</div>
+<!-- （該当なし） -->
+
+<!-- ==== 末尾（日本語原表記のみの補足） ==== -->
+<div class="section-title">JP</div>
+<div class="item"><div class="ja">サケイクのカイ</div><div class="en">酒育の会</div></div>
+
+</main>
+
+<footer>© Bar SPEC — Whisky Bottlers Index</footer>
+
+<script>
+// 🔍 検索（日本語・英語の両方に対応）
+const searchInput=document.getElementById('search');
+searchInput.addEventListener('keyup',()=>{
+  const filter=searchInput.value.toLowerCase();
+  document.querySelectorAll('.item').forEach(el=>{
+    el.style.display = el.textContent.toLowerCase().includes(filter)?'':'none';
+  });
+});
+</script>
+</body>
+</html>

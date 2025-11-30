@@ -1,0 +1,698 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Japan Whisky Index — 日本のウイスキー蒸溜所（英語名＋検索＋県タグ）</title>
+<meta name="description" content="日本全国のウイスキー蒸溜所を地域別に一覧化。検索は日本語・英語・会社名・都道府県に対応。">
+
+<link rel="stylesheet" href="header.css">
+
+<style>
+  :root{
+    --bg:#1b1917; --panel:#201f1d; --ink:#f6f1e9; --muted:#b9b2a6; --accent:#e5c47b; --chip:#2a2724; --border:#2e2a26;
+  }
+  html,body{
+    background:radial-gradient(1200px 800px at 45% 12%, #23211f 0%, #1b1917 60%, #141311 100%);
+    color:var(--ink); margin:0; font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  }
+  .wrap{max-width:1100px; margin:28px auto; padding:0 16px;}
+  header{margin-bottom:16px}
+  h1{font-size:30px; font-weight:800; letter-spacing:.02em; margin:0 0 8px;color:var(--accent);}
+  .subtitle{color:var(--muted); margin:0 0 14px; line-height:1.6}
+  .controls{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin:6px 0 18px}
+  .search{flex:1; min-width:260px; position:relative}
+  input[type="search"]{
+    width:100%; padding:12px 14px; background:#12100f; color:var(--ink);
+    border:1px solid var(--border); border-radius:12px; font-size:16px; outline:none;
+  }
+  .suggest{
+    position:absolute; left:0; right:0; background:#201f1d;
+    border:1px solid rgba(229,196,123,.3); border-radius:10px;
+    margin-top:6px; max-height:280px; overflow:auto; width:100%;
+    z-index:50; display:none;
+  }
+  .suggest a{
+    display:flex; justify-content:space-between; gap:10px;
+    padding:10px 12px; text-decoration:none; color:inherit
+  }
+  .suggest a:hover{background:#262422}
+  .district>h2{
+    font-size:20px; font-weight:800; color:var(--accent);
+    margin:18px 0 10px; letter-spacing:.02em;
+    border-bottom:1px solid rgba(229,196,123,.25); padding-bottom:4px;
+  }
+  .grid{display:grid; grid-template-columns:repeat(1,minmax(0,1fr)); gap:14px}
+  @media (min-width:640px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media (min-width:980px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+  .card{
+    background:radial-gradient(circle at 30% 20%, #22201e 0%, #1a1917 90%);
+    border:1px solid rgba(229,196,123,.28);
+    border-radius:16px; padding:16px;
+    box-shadow:inset 0 0 10px rgba(0,0,0,.45), 0 2px 5px rgba(0,0,0,.4);
+    transition:transform .15s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .card:hover{
+    transform:translateY(-3px);
+    border-color:rgba(255,220,160,.45);
+    box-shadow:inset 0 0 12px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.45), 0 0 8px rgba(229,196,123,.18);
+  }
+  .names .jp{font-weight:800; font-size:18px;}
+  .names .en{font-size:13px; color:var(--muted);}
+  .desc{font-size:14px; color:var(--muted); line-height:1.7; margin-top:6px}
+  .meta{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+  .chip{
+    font-size:11px; color:var(--ink); background:var(--chip);
+    border:1px solid var(--border); padding:4px 8px; border-radius:999px
+  }
+  footer{
+    color:var(--muted); font-size:12px; margin:28px 0 40px;
+    line-height:1.6; border-top:1px solid rgba(255,255,255,.05);
+    padding-top:10px; text-align:center
+  }
+
+  /* 戻りボタン（上部・横並び） */
+  .nav-links{
+    display:flex;
+    flex-direction:row;
+    justify-content:flex-start;
+    gap:12px;
+    margin:16px 16px 10px;
+    flex-wrap:nowrap;
+  }
+  .nav-links .back{
+    padding:10px 18px;
+    display:inline-block;
+    white-space:nowrap;
+    text-decoration:none;
+    background:#181614;
+    color:#d7b274;
+    border:1px solid rgba(215,178,116,.45);
+    border-radius:8px;
+    box-shadow:0 3px 6px rgba(0,0,0,.35);
+    transition:all .2s ease;
+  }
+  .nav-links .back:hover{
+    background:#2a241f;
+    border-color:#d7b274;
+    box-shadow:0 4px 12px rgba(215,178,116,.25);
+    transform:translateY(-1px);
+  }
+  @media(max-width:600px){
+    .nav-links{
+      flex-direction:row;
+      flex-wrap:nowrap;
+    }
+    .nav-links .back{
+      width:auto;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ▼ 共通ヘッダー読込 -->
+<div include-html="common/header.html"></div>
+
+<div class="wrap">
+
+  <div class="nav-links">
+    <a href="index.html" class="back">← World Whisky Index</a>
+    <a href="five-major-whiskies.html" class="back">← Five major whiskies</a>
+  </div>
+
+  <header>
+    <h1>Japan Whisky Index</h1>
+    <p class="subtitle">日本全国の蒸溜所一覧 — Founded / Owner /</p>
+    <div class="controls">
+      <div class="search">
+        <input id="q" type="search" placeholder="検索：例）北海道、余市、Nikka…">
+        <!-- 将来のサジェスト用コンテナ -->
+        <div class="suggest" id="suggest"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ 北海道 ============ -->
+  <section class="district">
+    <h2>北海道</h2>
+    <div class="grid">
+
+      <!-- Yoichi -->
+      <article class="card" data-jp="余市蒸溜所" data-en="Yoichi Distillery" data-company="ニッカウヰスキー株式会社" data-pref="北海道">
+        <div class="names"><span class="jp">余市蒸溜所</span><span class="en">Yoichi Distillery</span></div>
+        <div class="desc">ニッカウヰスキーの象徴的な蒸溜所。石炭直火蒸留を継承。</div>
+        <div class="meta">
+          <span class="chip">設立：1934年 (設立)</span>
+          <span class="chip">オーナー：ニッカウヰスキー株式会社</span>
+          <a href="https://jwic.jp/distillery/Yoichi/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Akkeshi -->
+      <article class="card" data-jp="厚岸蒸溜所" data-en="Akkeshi Distillery" data-company="堅展実業株式会社" data-pref="北海道">
+        <div class="names"><span class="jp">厚岸蒸溜所</span><span class="en">Akkeshi Distillery</span></div>
+        <div class="desc">ピートと湿原の香り。アイラスタイルを志向した本格派。</div>
+        <div class="meta">
+          <span class="chip">設立：2016年 (蒸留開始)</span>
+          <span class="chip">オーナー：堅展実業株式会社</span>
+          <a href="https://jwic.jp/distillery/Akkeshi/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Niseko -->
+      <article class="card" data-jp="ニセコ蒸溜所" data-en="Niseko Distillery" data-company="株式会社ニセコ蒸溜所" data-pref="北海道">
+        <div class="names"><span class="jp">ニセコ蒸溜所</span><span class="en">Niseko Distillery</span></div>
+        <div class="desc">羊蹄山の伏流水を使用した新興クラフト蒸留所。</div>
+        <div class="meta">
+          <span class="chip">設立：2019年 (会社設立)</span>
+          <span class="chip">オーナー：株式会社ニセコ蒸溜所</span>
+          <a href="https://jwic.jp/distillery/Niseko/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Maoi -->
+      <article class="card" data-jp="馬追蒸溜所" data-en="Maoi Distillery" data-company="不明" data-pref="北海道">
+        <div class="names"><span class="jp">馬追蒸溜所</span><span class="en">Maoi Distillery</span></div>
+        <div class="desc">北海道の新興クラフト。詳細は未公開。</div>
+        <div class="meta">
+          <span class="chip">設立：不明</span>
+          <span class="chip">オーナー：不明</span>
+          <a href="https://jwic.jp/distillery/Maoi/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Rishiri -->
+      <article class="card" data-jp="利尻蒸留所" data-en="Rishiri Distillery" data-company="神居ウイスキー株式会社" data-pref="北海道">
+        <div class="names"><span class="jp">利尻蒸留所</span><span class="en">Rishiri Distillery</span></div>
+        <div class="desc">利尻島の自然が香る新興蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2022年 (創業)</span>
+          <span class="chip">オーナー：神居ウイスキー株式会社</span>
+          <a href="https://jwic.jp/distillery/Rishiri/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 東北地方 ============ -->
+  <section class="district">
+    <h2>東北地方</h2>
+    <div class="grid">
+
+      <!-- Asaka -->
+      <article class="card" data-jp="安積蒸溜所" data-en="Asaka Distillery" data-company="笹の川酒造株式会社" data-pref="福島県">
+        <div class="names"><span class="jp">安積蒸溜所</span><span class="en">Asaka Distillery</span></div>
+        <div class="desc">東北唯一の本格ポットスチル蒸溜所として知られる。</div>
+        <div class="meta">
+          <span class="chip">設立：2016年 (ウイスキー蒸留再開)</span>
+          <span class="chip">オーナー：笹の川酒造株式会社</span>
+          <a href="https://jwic.jp/distillery/Asaka/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Tenkyo -->
+      <article class="card" data-jp="天鏡蒸溜所" data-en="Tenkyo Distillery" data-company="天鏡株式会社" data-pref="福島県">
+        <div class="names"><span class="jp">天鏡蒸溜所</span><span class="en">Tenkyo Distillery</span></div>
+        <div class="desc">会津の自然を背景にしたクラフト蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：1869年 (会社創業)</span>
+          <span class="chip">オーナー：天鏡株式会社</span>
+          <a href="https://jwic.jp/distillery/Tenkyo/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 関東地方 ============ -->
+  <section class="district">
+    <h2>関東地方</h2>
+    <div class="grid">
+
+      <!-- Chichibu -->
+      <article class="card" data-jp="秩父蒸溜所" data-en="Chichibu Distillery" data-company="株式会社ベンチャーウイスキー" data-pref="埼玉県">
+        <div class="names"><span class="jp">秩父蒸溜所</span><span class="en">Chichibu Distillery</span></div>
+        <div class="desc">日本を代表するクラフト蒸溜所。国際的高評価。</div>
+        <div class="meta">
+          <span class="chip">設立：2008年 (設立)</span>
+          <span class="chip">オーナー：株式会社ベンチャーウイスキー</span>
+          <a href="https://jwic.jp/distillery/Chichibu/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Hanyu -->
+      <article class="card" data-jp="羽生蒸溜所" data-en="Hanyu Distillery" data-company="不明 (現在は非稼働)" data-pref="埼玉県">
+        <div class="names"><span class="jp">羽生蒸溜所</span><span class="en">Hanyu Distillery</span></div>
+        <div class="desc">現在は閉鎖しているが、イチローズモルトのルーツ。</div>
+        <div class="meta">
+          <span class="chip">設立：1946年 (東亜酒造が設立)</span>
+          <span class="chip">オーナー：不明 (現在は非稼働)</span>
+          <a href="https://jwic.jp/distillery/Hanyu/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Takakura -->
+      <article class="card" data-jp="高藏蒸留所" data-en="Takakura Distillery" data-company="明利酒類" data-pref="茨城県">
+        <div class="names"><span class="jp">高藏蒸留所</span><span class="en">Takakura Distillery</span></div>
+        <div class="desc">明利酒類による小規模蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：1950年</span>
+          <span class="chip">オーナー：明利酒類</span>
+          <a href="https://jwic.jp/distillery/takazo/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Yasato（関東に1件だけ） -->
+      <article class="card" data-jp="八郷蒸溜所" data-en="Yasato Distillery" data-company="木内酒造合資会社" data-pref="茨城県">
+        <div class="names"><span class="jp">八郷蒸溜所</span><span class="en">Yasato Distillery</span></div>
+        <div class="desc">ビール醸造で有名な木内酒造による新鋭蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2020年 (ウイスキー蒸留開始)</span>
+          <span class="chip">オーナー：木内酒造合資会社</span>
+          <a href="https://jwic.jp/distillery/Yasato/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============================== -->
+  <!-- PART 2 — 中部 → 関西 → 中国 -->
+  <!-- ============================== -->
+
+  <!-- ============ 中部地方 ============ -->
+  <section class="district">
+    <h2>中部地方</h2>
+    <div class="grid">
+
+      <!-- Gaia Flow Shizuoka -->
+      <article class="card" data-jp="ガイアフロー静岡蒸溜所" data-en="Gaia Flow Shizuoka Distillery" data-company="ガイアフローディスティリング株式会社" data-pref="静岡県">
+        <div class="names"><span class="jp">ガイアフロー静岡蒸溜所</span><span class="en">Gaia Flow Shizuoka Distillery</span></div>
+        <div class="desc">旧軽井沢のポットスチルを受け継ぐ静岡の先進クラフト。</div>
+        <div class="meta">
+          <span class="chip">設立：2016年 (竣工)</span>
+          <span class="chip">オーナー：ガイアフローディスティリング株式会社</span>
+        </div>
+      </article>
+
+      <!-- Ikawa -->
+      <article class="card" data-jp="井川蒸溜所" data-en="Ikawa Distillery" data-company="十山株式会社" data-pref="静岡県">
+        <div class="names"><span class="jp">井川蒸溜所</span><span class="en">Ikawa Distillery</span></div>
+        <div class="desc">南アルプスの源流水で仕込む新興クラフト。</div>
+        <div class="meta">
+          <span class="chip">設立：2020年 (蒸留開始)</span>
+          <span class="chip">オーナー：十山株式会社</span>
+          <a href="https://jwic.jp/distillery/Ikawa/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Ise（三重＝中部扱い） -->
+      <article class="card" data-jp="伊勢蒸留所" data-en="Ise Distillery" data-company="株式会社伊勢萬" data-pref="三重県">
+        <div class="names"><span class="jp">伊勢蒸留所</span><span class="en">Ise Distillery</span></div>
+        <div class="desc">伊勢の豊かな水で仕込むクラフトディスティラリー。</div>
+        <div class="meta">
+          <span class="chip">設立：2020年代 (クラフト蒸留開始)</span>
+          <span class="chip">オーナー：株式会社伊勢萬</span>
+          <a href="https://jwic.jp/distillery/Ise/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Hakushu（山梨 → 中部） -->
+      <article class="card" data-jp="サントリー白州蒸溜所" data-en="Suntory Hakushu Distillery" data-company="サントリーホールディングス株式会社" data-pref="山梨県">
+        <div class="names"><span class="jp">サントリー白州蒸溜所</span><span class="en">Suntory Hakushu Distillery</span></div>
+        <div class="desc">「森の蒸溜所」として知られる白州。</div>
+        <div class="meta">
+          <span class="chip">設立：1973年 (設立)</span>
+          <span class="chip">オーナー：サントリーホールディングス株式会社</span>
+          <a href="https://jwic.jp/distillery/hakushu/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Chita（愛知 → 中部） -->
+      <article class="card" data-jp="サントリー知多蒸溜所" data-en="Suntory Chita Distillery" data-company="サントリーホールディングス株式会社" data-pref="愛知県">
+        <div class="names"><span class="jp">サントリー知多蒸溜所</span><span class="en">Suntory Chita Distillery</span></div>
+        <div class="desc">グレーン原酒の一大生産拠点。</div>
+        <div class="meta">
+          <span class="chip">設立：1972年 (設立)</span>
+          <span class="chip">オーナー：サントリーホールディングス株式会社</span>
+          <a href="https://jwic.jp/distillery/chita/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Hekinan（愛知 → 中部） -->
+      <article class="card" data-jp="碧南蒸留所" data-en="Hekinan Distillery" data-company="相生ユニビオ株式会社" data-pref="愛知県">
+        <div class="names"><span class="jp">碧南蒸留所</span><span class="en">Hekinan Distillery</span></div>
+        <div class="desc">焼酎メーカーが挑むグレーンウイスキー製造。</div>
+        <div class="meta">
+          <span class="chip">設立：1949年 (ウイスキー事業開始)</span>
+          <span class="chip">オーナー：相生ユニビオ株式会社</span>
+          <a href="https://jwic.jp/distillery/Hekinan/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Niigata Kameda -->
+      <article class="card" data-jp="新潟亀田蒸溜所" data-en="Niigata Kameda Distillery" data-company="株式会社新潟小規模蒸溜所" data-pref="新潟県">
+        <div class="names"><span class="jp">新潟亀田蒸溜所</span><span class="en">Niigata Kameda Distillery</span></div>
+        <div class="desc">小規模ながら新潟の新たなクラフト拠点。</div>
+        <div class="meta">
+          <span class="chip">設立：2019年 (会社設立)</span>
+          <span class="chip">オーナー：株式会社新潟小規模蒸溜所</span>
+        </div>
+      </article>
+
+      <!-- Niigata Distillery -->
+      <article class="card" data-jp="新潟蒸溜所" data-en="Niigata Distillery" data-company="株式会社新潟小規模蒸溜所" data-pref="新潟県">
+        <div class="names"><span class="jp">新潟蒸溜所</span><span class="en">Niigata Distillery</span></div>
+        <div class="desc">新潟のクラフトウイスキーを牽引する蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2019年 (会社設立)</span>
+          <span class="chip">オーナー：株式会社新潟小規模蒸溜所</span>
+          <a href="https://jwic.jp/distillery/Niigata/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Shinobu -->
+      <article class="card" data-jp="忍蒸溜所" data-en="Shinobu Distillery" data-company="新潟麦酒株式会社" data-pref="新潟県">
+        <div class="names"><span class="jp">忍蒸溜所</span><span class="en">Shinobu Distillery</span></div>
+        <div class="desc">ビール会社が挑戦する個性派ウイスキー。</div>
+        <div class="meta">
+          <span class="chip">設立：2016年 (免許取得)</span>
+          <span class="chip">オーナー：新潟麦酒株式会社</span>
+          <a href="https://jwic.jp/distillery/Shinobu/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Nozawa Onsen -->
+      <article class="card" data-jp="野沢温泉蒸留所" data-en="Nozawa Onsen Distillery" data-company="Nozawa Onsen Distillery" data-pref="長野県">
+        <div class="names"><span class="jp">野沢温泉蒸留所</span><span class="en">Nozawa Onsen Distillery</span></div>
+        <div class="desc">温泉街に誕生した新鋭クラフト蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2021年</span>
+          <span class="chip">オーナー：Nozawa Onsen Distillery</span>
+          <a href="https://jwic.jp/distillery/nozawa_onsen/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Iiyama -->
+      <article class="card" data-jp="飯山マウンテンファーム蒸溜所" data-en="Iiyama Mountain Farm Distillery" data-company="不明" data-pref="長野県">
+        <div class="names"><span class="jp">飯山マウンテンファーム蒸溜所</span><span class="en">Iiyama Mountain Farm Distillery</span></div>
+        <div class="desc">長野県の高地にある小規模クラフト蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：不明</span>
+          <span class="chip">オーナー：不明</span>
+        </div>
+      </article>
+
+      <!-- Komoro（長野 → 中部） -->
+      <article class="card" data-jp="小諸蒸留所" data-en="Komoro Distillery" data-company="小諸蒸留所株式会社" data-pref="長野県">
+        <div class="names"><span class="jp">小諸蒸留所</span><span class="en">Komoro Distillery</span></div>
+        <div class="desc">信州の自然に囲まれた2023年創業の蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2023年 (蒸留開始)</span>
+          <span class="chip">オーナー：小諸蒸留所株式会社</span>
+          <a href="https://jwic.jp/distillery/Komoro/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Hida Takayama -->
+      <article class="card" data-jp="飛騨高山蒸溜所" data-en="Hida Takayama Distillery" data-company="不明" data-pref="岐阜県">
+        <div class="names"><span class="jp">飛騨高山蒸溜所</span><span class="en">Hida Takayama Distillery</span></div>
+        <div class="desc">飛騨の自然の中で創業した新興蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：不明</span>
+          <span class="chip">オーナー：不明</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 関西地方 ============ -->
+  <section class="district">
+    <h2>関西地方</h2>
+    <div class="grid">
+
+      <!-- Yamazaki -->
+      <article class="card" data-jp="サントリー山崎蒸溜所" data-en="Suntory Yamazaki Distillery" data-company="サントリーホールディングス株式会社" data-pref="大阪府">
+        <div class="names"><span class="jp">サントリー山崎蒸溜所</span><span class="en">Suntory Yamazaki Distillery</span></div>
+        <div class="desc">日本ウイスキー発祥の地。世界的ブランドの原点。</div>
+        <div class="meta">
+          <span class="chip">設立：1923年 (着工)</span>
+          <span class="chip">オーナー：サントリーホールディングス株式会社</span>
+          <a href="https://jwic.jp/distillery/yamazaki/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Eigashima -->
+      <article class="card" data-jp="江井ヶ嶋蒸溜所" data-en="Eigashima Distillery" data-company="江井ヶ嶋酒造株式会社" data-pref="兵庫県">
+        <div class="names"><span class="jp">江井ヶ嶋蒸溜所</span><span class="en">Eigashima Distillery</span></div>
+        <div class="desc">日本最古級のウイスキー製造企業による蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：1888年 (会社創業)</span>
+          <span class="chip">オーナー：江井ヶ嶋酒造株式会社</span>
+          <a href="https://jwic.jp/distillery/Eigashima/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Kaikyo -->
+      <article class="card" data-jp="海峡蒸溜所" data-en="Kaikyo Distillery" data-company="明石酒類醸造株式会社" data-pref="兵庫県">
+        <div class="names"><span class="jp">海峡蒸溜所</span><span class="en">Kaikyo Distillery</span></div>
+        <div class="desc">明石で誕生したクラフトモルト蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2017年 (ウイスキー蒸留開始)</span>
+          <span class="chip">オーナー：明石酒類醸造株式会社</span>
+          <a href="https://jwic.jp/distillery/Kaikyo/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Kobe -->
+      <article class="card" data-jp="神戸蒸溜所" data-en="Kobe Distillery" data-company="株式会社グロースターズ" data-pref="兵庫県">
+        <div class="names"><span class="jp">神戸蒸溜所</span><span class="en">Kobe Distillery</span></div>
+        <div class="desc">神戸の街で2022年に誕生した新興蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2022年 (ウイスキー蒸留開始)</span>
+          <span class="chip">オーナー：株式会社グロースターズ</span>
+          <a href="https://jwic.jp/distillery/Kobe/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Tanba -->
+      <article class="card" data-jp="丹波蒸溜所" data-en="Tanba Distillery" data-company="株式会社黄桜" data-pref="兵庫県">
+        <div class="names"><span class="jp">丹波蒸溜所</span><span class="en">Tanba Distillery</span></div>
+        <div class="desc">京都の名門・黄桜のウイスキー蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2021年 (蒸留開始)</span>
+          <span class="chip">オーナー：株式会社黄桜</span>
+          <a href="https://jwic.jp/distillery/Tanba/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 中国地方 ============ -->
+  <section class="district">
+    <h2>中国地方</h2>
+    <div class="grid">
+
+      <!-- Sakurao -->
+      <article class="card" data-jp="SAKURAO DISTILLERY" data-en="SAKURAO DISTILLERY" data-company="株式会社サクラオブルワリーアンドディスティラリー" data-pref="広島県">
+        <div class="names"><span class="jp">SAKURAO DISTILLERY</span><span class="en">SAKURAO DISTILLERY</span></div>
+        <div class="desc">広島発、モルトとクラフトジンの名所。</div>
+        <div class="meta">
+          <span class="chip">設立：2017年 (蒸留開始)</span>
+          <span class="chip">オーナー：株式会社サクラオブルワリーアンドディスティラリー</span>
+          <a href="https://jwic.jp/distillery/SAKURAO/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Chiyomusubi Sakaiminato -->
+      <article class="card" data-jp="千代むすび 境港蒸留所" data-en="Chiyomusubi Sakaiminato Distillery" data-company="千代むすび酒造株式会社" data-pref="鳥取県">
+        <div class="names"><span class="jp">千代むすび 境港蒸留所</span><span class="en">Chiyomusubi Sakaiminato Distillery</span></div>
+        <div class="desc">鳥取の老舗酒蔵が挑むクラフトウイスキー。</div>
+        <div class="meta">
+          <span class="chip">設立：2020年代 (蒸留開始)</span>
+          <span class="chip">オーナー：千代むすび酒造株式会社</span>
+        </div>
+      </article>
+
+      <!-- Okayama -->
+      <article class="card" data-jp="岡山蒸溜所" data-en="Okayama Distillery" data-company="宮下酒造株式会社" data-pref="岡山県">
+        <div class="names"><span class="jp">岡山蒸溜所</span><span class="en">Okayama Distillery</span></div>
+        <div class="desc">清酒蔵が手がけるモルトウイスキー。</div>
+        <div class="meta">
+          <span class="chip">設立：2011年 (ウイスキー蒸留開始)</span>
+          <span class="chip">オーナー：宮下酒造株式会社</span>
+          <a href="https://jwic.jp/distillery/Okayama/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============================== -->
+  <!-- PART 3 — 四国 → 九州 → 沖縄 -->
+  <!-- ============================== -->
+
+  <!-- ============ 四国地方 ============ -->
+  <section class="district">
+    <h2>四国地方</h2>
+    <div class="grid">
+
+      <!-- Umemijin -->
+      <article class="card" data-jp="梅美人酒造" data-en="Umemijin Shuzo (Distillery)" data-company="梅美人酒造株式会社" data-pref="愛媛県">
+        <div class="names"><span class="jp">梅美人酒造</span><span class="en">Umemijin Shuzo (Distillery)</span></div>
+        <div class="desc">愛媛の酒蔵が手掛けるクラフトウイスキー。</div>
+        <div class="meta">
+          <span class="chip">設立：1916年 (会社設立)</span>
+          <span class="chip">オーナー：梅美人酒造株式会社</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 九州地方 ============ -->
+  <section class="district">
+    <h2>九州地方</h2>
+    <div class="grid">
+
+      <!-- Mars Tsunuki -->
+      <article class="card" data-jp="マルス津貫蒸溜所" data-en="Mars Tsunuki Distillery" data-company="本坊酒造株式会社" data-pref="鹿児島県">
+        <div class="names"><span class="jp">マルス津貫蒸溜所</span><span class="en">Mars Tsunuki Distillery</span></div>
+        <div class="desc">本坊酒造が南薩摩で展開するモルト蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2016年 (設立)</span>
+          <span class="chip">オーナー：本坊酒造株式会社</span>
+          <a href="https://jwic.jp/distillery/mars_komagatake/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Hinokami -->
+      <article class="card" data-jp="火の神蒸溜所" data-en="Hinokami Distillery" data-company="薩摩酒造株式会社" data-pref="鹿児島県">
+        <div class="names"><span class="jp">火の神蒸溜所</span><span class="en">Hinokami Distillery</span></div>
+        <div class="desc">薩摩焼酎メーカーが挑むモルト造り。</div>
+        <div class="meta">
+          <span class="chip">設立：1936年 (会社設立)</span>
+          <span class="chip">オーナー：薩摩酒造株式会社</span>
+          <a href="https://jwic.jp/distillery/Hinokami/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Ontake -->
+      <article class="card" data-jp="御岳蒸溜所" data-en="Ontake Distillery" data-company="西酒造株式会社" data-pref="鹿児島県">
+        <div class="names"><span class="jp">御岳蒸溜所</span><span class="en">Ontake Distillery</span></div>
+        <div class="desc">芋焼酎の名門・西酒造が手がけるモルト蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2019年 (ウイスキー蒸留開始)</span>
+          <span class="chip">オーナー：西酒造株式会社</span>
+          <a href="https://jwic.jp/distillery/Ontake/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Komaki -->
+      <article class="card" data-jp="小牧蒸溜所" data-en="Komaki Distillery" data-company="小牧醸造株式会社" data-pref="鹿児島県">
+        <div class="names"><span class="jp">小牧蒸溜所</span><span class="en">Komaki Distillery</span></div>
+        <div class="desc">小牧醸造が展開する2023年創業の蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2023年 (ウイスキー蒸留開始)</span>
+          <span class="chip">オーナー：小牧醸造株式会社</span>
+          <a href="https://jwic.jp/distillery/Komaki/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Hishida -->
+      <article class="card" data-jp="菱田蒸溜所" data-en="Hishida Distillery" data-company="不明" data-pref="鹿児島県">
+        <div class="names"><span class="jp">菱田蒸溜所</span><span class="en">Hishida Distillery</span></div>
+        <div class="desc">鹿児島で新たに誕生したクラフト蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：不明</span>
+          <span class="chip">オーナー：不明</span>
+          <a href="https://jwic.jp/distillery/Hishida/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Yamaga -->
+      <article class="card" data-jp="山鹿蒸溜所" data-en="Yamaga Distillery" data-company="株式会社山鹿蒸溜所" data-pref="熊本県">
+        <div class="names"><span class="jp">山鹿蒸溜所</span><span class="en">Yamaga Distillery</span></div>
+        <div class="desc">熊本・山鹿の豊かな自然が育むモルト蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2013年 (会社設立)</span>
+          <span class="chip">オーナー：株式会社山鹿蒸溜所</span>
+          <a href="https://jwic.jp/distillery/Yamaga/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Kuju（大分 → 九州へ移動） -->
+      <article class="card" data-jp="久住蒸溜所" data-en="Kuju Distillery" data-company="有限会社津崎商事" data-pref="大分県">
+        <div class="names"><span class="jp">久住蒸溜所</span><span class="en">Kuju Distillery</span></div>
+        <div class="desc">阿蘇くじゅうの自然に囲まれたクラフトディスティラリー。</div>
+        <div class="meta">
+          <span class="chip">設立：2021年 (設立)</span>
+          <span class="chip">オーナー：有限会社津崎商事</span>
+          <a href="https://jwic.jp/distillery/Kuju/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Osuzuyama -->
+      <article class="card" data-jp="尾鈴山蒸留所" data-en="Osuzuyama Distillery" data-company="株式会社尾鈴山蒸留所" data-pref="宮崎県">
+        <div class="names"><span class="jp">尾鈴山蒸留所</span><span class="en">Osuzuyama Distillery</span></div>
+        <div class="desc">焼酎蔵がウイスキー造りに挑む注目蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：1996年 (会社設立)</span>
+          <span class="chip">オーナー：株式会社尾鈴山蒸留所</span>
+          <a href="https://jwic.jp/distillery/Osuzuyama/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+      <!-- Yokogawa（鹿児島 → 九州へ移動） -->
+      <article class="card" data-jp="横川蒸留所" data-en="Yokogawa Distillery" data-company="アットスター株式会社" data-pref="鹿児島県">
+        <div class="names"><span class="jp">横川蒸留所</span><span class="en">Yokogawa Distillery</span></div>
+        <div class="desc">鹿児島で2000年に創業した蒸溜所。</div>
+        <div class="meta">
+          <span class="chip">設立：2000年 (会社設立)</span>
+          <span class="chip">オーナー：アットスター株式会社</span>
+          <a href="https://jwic.jp/distillery/Yokogawa/" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 沖縄地方 ============ -->
+  <section class="district">
+    <h2>沖縄地方</h2>
+    <div class="grid">
+
+      <!-- Kyoda / Helios（沖縄はこの1件に整理） -->
+      <article class="card" data-jp="許田蒸留所" data-en="Kyoda Distillery (Helios Distillery)" data-company="ヘリオス酒造株式会社" data-pref="沖縄県">
+        <div class="names"><span class="jp">許田蒸留所</span><span class="en">Kyoda Distillery (Helios Distillery)</span></div>
+        <div class="desc">名護市・許田にあるヘリオス酒造の蒸留所。泡盛やラムとともにウイスキーも製造。</div>
+        <div class="meta">
+          <span class="chip">設立：1961年 (ヘリオス創業)</span>
+          <span class="chip">オーナー：ヘリオス酒造株式会社</span>
+          <a href="https://www.helios-shop.jp/whisky" class="chip" target="_blank">Official Website</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+</div> <!-- wrap end -->
+
+<footer>© Bar SPEC — World Whisky Index (Japan Edition)</footer>
+
+<!-- ▼ 共通 include 読み込み -->
+<script>
+document.querySelectorAll("[include-html]").forEach(el=>{
+  fetch(el.getAttribute("include-html"))
+    .then(res => res.text())
+    .then(html => { el.innerHTML = html });
+});
+</script>
+
+</body>
+</html>

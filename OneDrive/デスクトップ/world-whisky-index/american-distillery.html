@@ -1,0 +1,782 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>American Whiskey Index — アメリカ蒸溜所一覧</title>
+
+<link rel="stylesheet" href="header.css">
+
+<style>
+  :root{
+    --bg:#1b1917; --panel:#201f1d; --ink:#f6f1e9; 
+    --muted:#b9b2a6; --accent:#e5c47b; 
+    --chip:#2a2724; --border:#2e2a26;
+  }
+  html,body{
+    margin:0;
+    background:radial-gradient(1200px 800px at 45% 12%, #23211f 0%, #1b1917 60%, #141311 100%);
+    color:var(--ink);
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+  }
+  .wrap{max-width:1100px; margin:28px auto; padding:0 16px;}
+
+  /* 🔙 上部ナビ（World Whisky Index / Five Major） */
+  .back-links{
+    text-align:center;
+    margin:20px 0 10px;
+  }
+.back-btn{
+  display:inline-block;
+  padding:8px 20px;
+  margin:4px 6px;
+  font-size:14px;
+  border-radius:999px;
+  background:linear-gradient(135deg,#bfa472,#8f744b);
+  color:#1c1814;
+  border:1px solid rgba(215,178,116,.7);
+  text-decoration:none;
+  box-shadow:0 0 6px rgba(215,178,116,.45);
+  transition:.2s ease;
+}
+.back-btn:hover{
+  background:linear-gradient(135deg,#d7b274,#b68b54);
+  box-shadow:0 0 10px rgba(215,178,116,.65);
+  transform:translateY(-1px);
+}
+
+
+
+  /* ヒーローセクション */
+  .hero{
+    text-align:center;
+    margin-bottom:16px;
+  }
+  .hero h1{
+    font-size:26px;
+    margin:4px 0 6px;
+    letter-spacing:.05em;
+  }
+  .hero p{
+    font-size:14px;
+    color:var(--muted);
+    margin:0 0 8px;
+  }
+
+  /* 州ジャンプ用タグ */
+  .tags{
+    margin-top:8px;
+  }
+
+  /* セクション（州ごとのブロック） */
+  .district{
+    margin:26px 0 10px;
+    padding-top:8px;
+    border-top:1px solid rgba(255,255,255,.08);
+  }
+  .district h2{
+    font-size:18px;
+    margin:0 0 10px;
+    color:var(--accent);
+  }
+
+  /* グリッドレイアウト（カード一覧） */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+    gap:14px;
+  }
+
+  /* カード共通 */
+  .card{
+    background:radial-gradient(circle at 20% 0%, #30261f 0%, #201d1a 45%, #171412 100%);
+    border-radius:14px;
+    padding:14px 14px 12px;
+    border:1px solid rgba(255,215,160,0.28);
+    box-shadow:
+      0 8px 18px rgba(0,0,0,.6),
+      inset 0 0 10px rgba(255,190,120,0.12);
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .card:hover{
+    transform:translateY(-3px);
+    border-color:rgba(255,215,160,0.55);
+    box-shadow:
+      0 10px 22px rgba(0,0,0,.75),
+      inset 0 0 16px rgba(255,190,120,0.22);
+  }
+
+  .names{
+    margin-bottom:4px;
+  }
+  .names .jp{
+    font-weight:700;
+    font-size:15px;
+    display:block;
+  }
+  .names .en{
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  .desc{
+    font-size:13px;
+    margin:6px 0 10px;
+  }
+
+  .meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    font-size:11px;
+  }
+  .chip{
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:999px;
+    background:rgba(0,0,0,.45);
+    border:1px solid rgba(255,215,160,0.35);
+    color:#fbe9cf;
+    text-decoration:none;
+  }
+  .chip:hover{
+    border-color:rgba(255,215,160,0.7);
+  }
+
+  footer{
+    color:var(--muted);
+    font-size:12px;
+    margin:28px 0 40px;
+    text-align:center;
+    border-top:1px solid rgba(255,255,255,.05);
+    padding-top:10px;
+  }
+	/* ▼ 州ボタン（従来通りの色つきボタン） */
+.link-btn{
+    display:inline-block;
+    margin:4px 6px;
+    padding:8px 18px;
+    border-radius:999px;
+    font-size:13px;
+    background:linear-gradient(135deg,#d7b274,#b68b54);
+    color:#1c1814;
+    border:1px solid rgba(215,178,116,.7);
+    text-decoration:none;
+    box-shadow:0 0 6px rgba(215,178,116,.45);
+    transition:all .2s ease;
+}
+.link-btn:hover{
+    background:linear-gradient(135deg,#e6c78a,#c49e67);
+    box-shadow:0 0 10px rgba(215,178,116,.65);
+    transform:translateY(-1px);
+}
+
+
+/* ▼ 戻りボタン（色なし・枠だけ） */
+.back-btn{
+    display:inline-block;
+    margin:4px 6px;
+    padding:8px 20px;
+    border-radius:999px;
+    font-size:14px;
+    color:#f6f1e9;
+    border:1px solid rgba(255,255,255,.35);
+    background:transparent;
+    text-decoration:none;
+    transition:all .2s ease;
+}
+
+.back-btn:hover{
+    border-color:rgba(255,255,255,.6);
+    background:rgba(255,255,255,.1);
+}
+
+	
+	
+	
+	
+</style>
+</head>
+
+<body>
+
+<!-- ▼ Amber Palette 共通ヘッダー -->
+<script>
+document.querySelectorAll("[include-html]").forEach(el=>{
+  fetch(el.getAttribute("include-html"))
+    .then(res => res.text())
+    .then(html => { el.innerHTML = html });
+});
+</script>
+
+
+<div class="wrap">
+
+  <!-- 中央のナビリンク -->
+<a href="index.html" class="back-btn">← World Whisky Index</a>
+<a href="five-major-whiskies.html" class="back-btn">← Five major whiskies</a>
+
+
+  </div>
+
+  <!-- ヒーロー＆タグ（アンカーは州IDへ飛ぶ） -->
+  <section class="hero">
+    <h1>American Whiskies</h1>
+    <p>テネシー、ケンタッキーの王道から、50州に広がるクラフトまで。</p>
+    <div class="tags">
+      <a class="link-btn" href="#Tennessee">Tennessee</a>
+      <a class="link-btn" href="#Kentucky">Kentucky</a>
+      <a class="link-btn" href="#Texas">Texas</a>
+      <a class="link-btn" href="#OtherStates">Other States</a>
+    </div>
+  </section>
+
+  <!-- ===================== -->
+  <!-- 🥃 Tennessee テネシー -->
+  <!-- ===================== -->
+  <section class="district" id="Tennessee">
+    <h2>テネシー州 Tennessee</h2>
+    <div class="grid">
+
+      <!-- Jack Daniel's（テネシー・ウイスキー代表） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ジャック・ダニエル蒸溜所</span>
+          <span class="en">Jack Daniel’s Distillery</span>
+        </div>
+        <div class="desc">
+          世界的に有名なテネシーウイスキーの象徴。
+          「チャコールメロウイング」と呼ばれる独自のろ過を行う。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 1866</span>
+          <span class="chip">Owner: Brown-Forman</span>
+          <span class="chip">State: Tennessee</span>
+          <a href="https://www.jackdaniels.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- George Dickel -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ジョージ・ディッケル</span>
+          <span class="en">George Dickel</span>
+        </div>
+        <div class="desc">
+          湧水と炭ろ過のクリーンな味わい。上品なバニラ香が広がるテネシーウイスキー。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 1870</span>
+          <span class="chip">Owner: Diageo</span>
+          <span class="chip">State: Tennessee</span>
+          <a href="https://www.georgedickel.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Uncle Nearest -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">アンクル・ニアレスト</span>
+          <span class="en">Uncle Nearest</span>
+        </div>
+        <div class="desc">
+          ジャック・ダニエルにテネシーウイスキー製法を教えたとされる
+          「ネイサン・グリーン」に由来するブランド。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2017</span>
+          <span class="chip">State: Tennessee</span>
+          <a href="https://unclenearest.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===================== -->
+  <!-- 🥃 Kentucky ケンタッキー -->
+  <!-- ===================== -->
+  <section class="district" id="Kentucky">
+    <h2>ケンタッキー州 Kentucky</h2>
+    <div class="grid">
+
+      <!-- Jim Beam -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ジム・ビーム蒸溜所</span>
+          <span class="en">Jim Beam Distillery</span>
+        </div>
+        <div class="desc">
+          世界で最も有名なバーボンブランドのひとつ。
+          コーンを主体にした芳醇な甘みとオーク香。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 1795</span>
+          <span class="chip">Owner: Beam Suntory</span>
+          <span class="chip">State: Kentucky</span>
+          <a href="https://www.jimbeam.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Maker's Mark -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">メーカーズマーク蒸溜所</span>
+          <span class="en">Maker’s Mark Distillery</span>
+        </div>
+        <div class="desc">
+          赤い封蝋のボトルで知られる、軟らかい口当たりのバーボン。
+          小麦を使用したレシピが特徴。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 1953</span>
+          <span class="chip">Owner: Beam Suntory</span>
+          <span class="chip">State: Kentucky</span>
+          <a href="https://www.makersmark.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Buffalo Trace -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">バッファロー・トレース</span>
+          <span class="en">Buffalo Trace Distillery</span>
+        </div>
+        <div class="desc">
+          アメリカで最も古い蒸溜所の一つとされ、多数のブランドを展開。
+          ラインナップの幅広さも魅力。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 1773</span>
+          <span class="chip">Owner: Sazerac Company</span>
+          <span class="chip">State: Kentucky</span>
+          <a href="https://www.buffalotracedistillery.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Woodford Reserve -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ウッドフォードリザーブ</span>
+          <span class="en">Woodford Reserve</span>
+        </div>
+        <div class="desc">
+          スモールバッチ・バーボンの代表格。
+          トリプルポットスチルを用いた複雑なフレーバー。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 1812</span>
+          <span class="chip">Owner: Brown-Forman</span>
+          <span class="chip">State: Kentucky</span>
+          <a href="https://www.woodfordreserve.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Four Roses -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">フォアローゼズ</span>
+          <span class="en">Four Roses Distillery</span>
+        </div>
+        <div class="desc">
+          10種類のレシピを組み合わせる独自のスタイルで有名。
+          柔らかく華やかな香り。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 1888</span>
+          <span class="chip">Owner: Kirin Holdings</span>
+          <span class="chip">State: Kentucky</span>
+          <a href="https://www.fourrosesbourbon.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Wild Turkey -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ワイルドターキー</span>
+          <span class="en">Wild Turkey Distillery</span>
+        </div>
+        <div class="desc">
+          力強いフレーバーと高いアルコール度数で知られる。
+          トラディショナルなバーボンスタイル。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 1869</span>
+          <span class="chip">Owner: Campari Group</span>
+          <span class="chip">State: Kentucky</span>
+          <a href="https://www.wildturkeybourbon.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Heaven Hill -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ヘブンヒル</span>
+          <span class="en">Heaven Hill</span>
+        </div>
+        <div class="desc">
+          大規模な家族経営蒸溜所として、幅広いバーボン＆ライ・ウイスキーを生産。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 1935</span>
+          <span class="chip">Owner: Heaven Hill Brands</span>
+          <span class="chip">State: Kentucky</span>
+          <a href="https://heavenhilldistillery.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Angel’s Envy -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">エンジェルズ・エンヴィー</span>
+          <span class="en">Angel’s Envy</span>
+        </div>
+        <div class="desc">
+          ポートワイン樽熟成など、フィニッシュに特徴を持つ
+          近年注目のクラフトバーボン。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2010</span>
+          <span class="chip">Owner: Bacardi</span>
+          <span class="chip">State: Kentucky</span>
+          <a href="https://angelsenvy.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===================== -->
+  <!-- 🥃 Texas テキサス -->
+  <!-- ===================== -->
+  <section class="district" id="Texas">
+    <h2>テキサス州 Texas</h2>
+    <div class="grid">
+
+      <!-- Balcones Distilling -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">バルコンズ蒸溜所</span>
+          <span class="en">Balcones Distilling</span>
+        </div>
+        <div class="desc">
+          テキサス産原料を用いた力強いフレーバーで知られるクラフト蒸溜所。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2008</span>
+          <span class="chip">State: Texas</span>
+          <a href="https://balconesdistilling.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Garrison Brothers -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ギャリソン・ブラザーズ</span>
+          <span class="en">Garrison Brothers</span>
+        </div>
+        <div class="desc">
+          テキサス初のリーガル・バーボン蒸溜所。
+          高温気候を活かした濃厚な熟成感。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2005</span>
+          <span class="chip">State: Texas</span>
+          <a href="https://www.garrisonbros.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Treaty Oak Distilling -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">トリーティ・オーク</span>
+          <span class="en">Treaty Oak Distilling</span>
+        </div>
+        <div class="desc">
+          イノベーティブな樽熟成やブレンドで知られる、オースティン近郊の蒸溜所。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2006</span>
+          <span class="chip">State: Texas</span>
+          <a href="https://www.treatyoakdistilling.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Still Austin Whiskey Co. -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">スティル・オースティン</span>
+          <span class="en">Still Austin Whiskey Co.</span>
+        </div>
+        <div class="desc">
+          テキサス産穀物を使ったシングルバッチウイスキーで注目の新興蒸溜所。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2015</span>
+          <span class="chip">State: Texas</span>
+          <a href="https://stillaustin.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Ironroot Republic -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">アイアンルート・リパブリック</span>
+          <span class="en">Ironroot Republic</span>
+        </div>
+        <div class="desc">
+          フランスのコニャック文化に影響を受けた樽熟成を行うユニークな蒸溜所。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2014</span>
+          <span class="chip">State: Texas</span>
+          <a href="https://www.ironrootrepublic.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Firestone & Robertson（TX Whiskey） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ファイアストーン＆ロバートソン</span>
+          <span class="en">Firestone & Robertson (TX Whiskey)</span>
+        </div>
+        <div class="desc">
+          地元産イーストを使った「TX Whiskey」で知られるフォートワースの蒸溜所。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2010</span>
+          <span class="chip">State: Texas</span>
+          <a href="https://www.frdistilling.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+  <!-- ===================== -->
+  <!-- 🥃 Other States その他の州 -->
+  <!-- ===================== -->
+  <section class="district" id="OtherStates">
+    <h2>その他の州 Other States</h2>
+    <div class="grid">
+
+      <!-- Westland Distillery（ワシントン州） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ウエストランド蒸溜所</span>
+          <span class="en">Westland Distillery</span>
+        </div>
+        <div class="desc">
+          ワシントン州シアトルに位置するアメリカンシングルモルトの先駆け的存在。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2010</span>
+          <span class="chip">State: Washington</span>
+          <a href="https://www.westlanddistillery.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Stranahan’s（コロラド州） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ストラナハンズ</span>
+          <span class="en">Stranahan’s Colorado Whiskey</span>
+        </div>
+        <div class="desc">
+          コロラド州デンバー発のアメリカンシングルモルト。
+          ロッキー山脈の雪解け水を使用。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2004</span>
+          <span class="chip">State: Colorado</span>
+          <a href="https://www.stranahans.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- High West（ユタ州） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ハイウェスト</span>
+          <span class="en">High West Distillery</span>
+        </div>
+        <div class="desc">
+          ユタ州パークシティに位置し、ブレンデッドライやバーボンで人気の蒸溜所。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2006</span>
+          <span class="chip">State: Utah</span>
+          <a href="https://www.highwest.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- FEW Spirits（イリノイ州） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">フュー・スピリッツ</span>
+          <span class="en">FEW Spirits</span>
+        </div>
+        <div class="desc">
+          シカゴ近郊でバーボン、ライ、ジンなどを手がけるクラフト蒸溜所。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2011</span>
+          <span class="chip">State: Illinois</span>
+          <a href="https://www.fewspirits.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- New Riff（ケンタッキー／オハイオ川沿い） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ニューリフ</span>
+          <span class="en">New Riff Distilling</span>
+        </div>
+        <div class="desc">
+          ボトルド・イン・ボンド規格にこだわる新世代のバーボン＆ライ生産者。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2014</span>
+          <span class="chip">State: Kentucky</span>
+          <a href="https://www.newriffdistilling.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Kings County Distillery（ニューヨーク州） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">キングス・カウンティ</span>
+          <span class="en">Kings County Distillery</span>
+        </div>
+        <div class="desc">
+          ニューヨーク・ブルックリンにあるクラフト蒸溜所。
+          スモールバッチかつ実験的なスタイル。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2010</span>
+          <span class="chip">State: New York</span>
+          <a href="https://kingscountydistillery.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Westward Whiskey（オレゴン州） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ウェストワード・ウイスキー</span>
+          <span class="en">Westward Whiskey</span>
+        </div>
+        <div class="desc">
+          ビール文化が根付くポートランドで生まれたアメリカンシングルモルト。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2004</span>
+          <span class="chip">State: Oregon</span>
+          <a href="https://westwardwhiskey.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Wilderness Trail（ケンタッキー州） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ウィルダネス・トレイル</span>
+          <span class="en">Wilderness Trail Distillery</span>
+        </div>
+        <div class="desc">
+          イーストや発酵の研究者による高精度な造りで注目の新興蒸溜所。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2012</span>
+          <span class="chip">State: Kentucky</span>
+          <a href="https://wildernesstraildistillery.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Wigle Whiskey（ペンシルベニア州） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ウィグル・ウイスキー</span>
+          <span class="en">Wigle Whiskey</span>
+        </div>
+        <div class="desc">
+          ペンシルベニア州ピッツバーグでライ・ウイスキー復興を掲げる蒸溜所。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2011</span>
+          <span class="chip">State: Pennsylvania</span>
+          <a href="https://wiglewhiskey.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Corsair Distillery（テネシー州） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">コルセア蒸溜所</span>
+          <span class="en">Corsair Distillery</span>
+        </div>
+        <div class="desc">
+          スモーク麦芽や珍しい原料を用いた実験的スピリッツで知られる。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 2008</span>
+          <span class="chip">State: Tennessee</span>
+          <a href="https://www.corsairdistillery.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- New Holland（ミシガン州） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">ニュー・ホーランド</span>
+          <span class="en">New Holland Brewing & Distilling</span>
+        </div>
+        <div class="desc">
+          ビール醸造とウイスキー造りを両立するミシガン州のクラフトメーカー。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 1997</span>
+          <span class="chip">State: Michigan</span>
+          <a href="https://newhollandbrew.com/spirits" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- St. George Spirits（カリフォルニア州） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">セント・ジョージ・スピリッツ</span>
+          <span class="en">St. George Spirits</span>
+        </div>
+        <div class="desc">
+          ジンやフルーツブランデーと共に、実験的なウイスキーも生産するカリフォルニアの蒸溜所。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: 1982</span>
+          <span class="chip">State: California</span>
+          <a href="https://stgeorgespirits.com" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+      <!-- Few more examples / smaller craft distilleries -->
+      <!-- コナーズ・ポイント（アラバマ州） -->
+      <article class="card">
+        <div class="names">
+          <span class="jp">コナーズポイント蒸溜所</span>
+          <span class="en">Connor’s Point Distillery</span>
+        </div>
+        <div class="desc">
+          アラバマ州で小規模生産を行うクラフトウイスキー蒸溜所。
+        </div>
+        <div class="meta">
+          <span class="chip">Founded: ---</span>
+          <span class="chip">State: Alabama</span>
+          <a href="https://www.connorspointdistillery.com/" class="chip" target="_blank">Official Site</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+</div><!-- wrap -->
+
+<!-- 共通 include 読み込み -->
+
+
+</body>
+</html>
