@@ -34,6 +34,25 @@
       margin-bottom:10px;
     }
 
+    /* 戻るボタンのスタイル */
+    .back-button {
+      display: inline-block;
+      text-decoration: none;
+      color: var(--amber);
+      font-size: 0.9em;
+      border: 1px solid rgba(215,178,116, 0.4);
+      padding: 6px 15px;      border-radius: 20px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      background: rgba(215,178,116, 0.05);
+    }
+
+    .back-button:hover {
+      background: rgba(215,178,116, 0.15);
+      border-color: var(--amber);
+      transform: translateX(-3px);
+    }
+
     .hub {
       display:grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -43,16 +62,8 @@
       padding:0 20px;
     }
 
-    /* =============================
-        レザー風カードデザイン
-       ============================= */
     .card {
-      background: linear-gradient(
-        145deg,
-        var(--leather1) 0%,
-        var(--leather2) 40%,
-        var(--leather3) 100%
-      );
+      background: linear-gradient(145deg, var(--leather1) 0%, var(--leather2) 40%, var(--leather3) 100%);
       border: 1px solid rgba(215,178,116,.45);
       border-radius: 14px;
       padding: 28px 20px;
@@ -60,13 +71,10 @@
       color: var(--ink);
       position: relative;
       overflow:hidden;
-      box-shadow:
-        inset 0 0 12px rgba(0,0,0,0.45),
-        0 0 14px rgba(215,178,116,.25);
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.45), 0 0 14px rgba(215,178,116,.25);
       transition: all .35s ease;
     }
 
-    /* 革の光のムラ表現 */
     .card::before {
       content:"";
       position:absolute;
@@ -80,9 +88,7 @@
 
     .card:hover {
       transform: translateY(-4px) scale(1.02);
-      box-shadow:
-        inset 0 0 14px rgba(0,0,0,0.55),
-        0 0 22px rgba(215,178,116,.45);
+      box-shadow: inset 0 0 14px rgba(0,0,0,0.55), 0 0 22px rgba(215,178,116,.45);
     }
 
     .card h2 {
@@ -113,41 +119,31 @@
 
 <body>
   <header>
+    <a href="https://amber-palette-hub.vercel.app/" class="back-button">← Amber Palette Hub</a>
     <h1>Amber Tools Hub</h1>
     <p class="sub">便利なツールをまとめたハブです。色関連、天気予報、変換ツール、計算ツールへのリンク。</p>
   </header>
 
   <section class="hub">
-
-    <!-- Color Tools -->
     <a href="https://amber-coloring.vercel.app/" class="card" target="_blank">
       <h2>Color Tools</h2>
-      <p>ウイスキーの色を体験・解析するツール<br>
-      Explore Amber Tones of Whisky</p>
+      <p>ウイスキーの色を体験・解析するツール<br>Explore Amber Tones of Whisky</p>
     </a>
 
-    <!-- Weather Tools -->
     <a href="https://amber-weather.vercel.app/" class="card" target="_blank">
       <h2>Weather Tools</h2>
-      <p>天気データとウイスキーの関連を確認<br>
-      Check Whisky & Weather Connections</p>
+      <p>天気データとウイスキーの関連を確認<br>Check Whisky & Weather Connections</p>
     </a>
 
-    <!-- Conversion Tools -->
     <a href="https://amber-liquid-proof.vercel.app/" class="card" target="_blank">
       <h2>Conversion Tools</h2>
-      <p>アルコール度数などの簡単な変換ツール<br>
-      ABV / Proof Converter</p>
+      <p>アルコール度数などの簡単な変換ツール<br>ABV / Proof Converter</p>
     </a>
 
-<!-- Amber Ratio -->
-<a href="https://amber-calculation.vercel.app/" class="card" target="_blank">
-  <h2>Amber Ratio</h2>
-  <p>ウイスキーの比率・合成計算ツール<br>
-  Whisky Ratio / Blend Utilities</p>
-</a>
-
-
+    <a href="https://amber-calculation.vercel.app/" class="card" target="_blank">
+      <h2>Amber Ratio</h2>
+      <p>ウイスキーの比率・合成計算ツール<br>Whisky Ratio / Blend Utilities</p>
+    </a>
   </section>
 
   <footer>© Amber Palette — Bar SPEC</footer>
