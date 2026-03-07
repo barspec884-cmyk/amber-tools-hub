@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Liquid Proof — All-in-One</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(circle at center, #1a0f08 0%, #050302 100%);
+      color: #e0e0e0; margin: 0; padding: 0; min-height: 100vh;
+      -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+    }
+
+    /* ナビゲーションヘッダー */
+    .nav-header {
+      display: flex; justify-content: flex-start; align-items: center;
+      max-width: 400px; margin: 0 auto; padding: 20px 20px 10px;
+    }
+    .back-btn {
+      text-decoration: none; color: #888; font-size: 0.75rem; letter-spacing: 1px;
+      display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.05);
+      padding: 8px 15px; border-radius: 50px; border: 1px solid rgba(212, 175, 55, 0.2);
+      transition: all 0.3s;
+    }
+    .back-btn:hover { border-color: #d4af37; color: #d4af37; }
+
+    /* タイトル */
+    .main-title {
+      font-size: 1.4rem; letter-spacing: 4px; color: #d4af37;
+      margin: 20px 0; text-align: center;
+      text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    }
+
+    /* メニュー画面 */
+    .menu-screen { padding: 20px; text-align: center; }
+    .menu-list { max-width: 360px; margin: 30px auto; }
+    .menu-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 16px; margin: 12px 0; padding: 18px 22px;
+      cursor: pointer; transition: all 0.3s ease;
+    }
+    .menu-item:hover, .menu-item:active {
+      border-color: #d4af37; background: rgba(212, 175, 55, 0.08);
+      transform: translateX(5px);
+    }
+    .menu-item-left { display: flex; align-items: center; gap: 15px; }
+    .menu-icon { font-size: 1.5rem; }
+    .menu-text { text-align: left; }
+    .menu-text h3 { margin: 0; font-size: 1rem; color: #fff; font-weight: 600; }
+    .menu-text p { margin: 4px 0 0; font-size: 0.7rem; color: #888; }
+    .menu-arrow { color: #d4af37; font-size: 1.2rem; opacity: 0.6; }
+
+    /* ツール画面共通 */
+    .tool-screen { display: none; padding: 20px; text-align: center; }
+    .tool-screen.active { display: block; }
+    .screen-back {
+      background: transparent; border: 1px solid rgba(212, 175, 55, 0.3);
+      color: #d4af37; padding: 8px 18px; border-radius: 50px;
+      font-size: 0.75rem; cursor: pointer; margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+    .screen-back:hover { background: rgba(212, 175, 55, 0.1); }
+
+    h2 {
+      font-size: 0.75rem; margin: 30px 0 10px; color: #d4af37;
+      text-transform: uppercase; letter-spacing: 2px; text-align: left;
+      max-width: 350px; margin-left: auto; margin-right: auto;
+      border-left: 2px solid #d4af37; padding-left: 10px;
+    }
+
+    .input-group {
+      display: flex; align-items: center;
+      background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 50px; margin: 10px auto; padding: 5px;
+      max-width: 360px; touch-action: none;
+    }
+    .label-box {
+      width: 90px; text-align: left; padding-left: 18px;
+      font-size: 0.65rem; color: #888;
+    }
+    input[type="number"] {
+      flex: 1; background: transparent; border: none; color: #fff;
+      text-align: center; font-size: 1.4rem; font-weight: 700; outline: none; width: 60px;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; }
+
+    button.ctrl {
+      width: 44px; height: 44px; border-radius: 50%; border: none;
+      background: rgba(212, 175, 55, 0.1); color: #d4af37;
+      font-size: 1.5rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    button.ctrl:active { background: #d4af37; color: #000; transform: scale(0.9); }
+
+    hr {
+      border: none; border-top: 1px solid rgba(212, 175, 55, 0.1);
+      margin: 40px auto; max-width: 200px;
+    }
+
+    /* カクテル計算専用 */
+    .ingredient-block {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 24px; padding: 15px; margin-bottom: 20px;
+      max-width: 370px; margin-left: auto; margin-right: auto;
+      position: relative;
+    }
+    .remove-btn {
+      position: absolute; top: 10px; right: 10px;
+      background: transparent; color: #555; border: none; font-size: 0.9rem; cursor: pointer;
+    }
+    .quick-row { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .fraction-btn {
+      background: transparent; border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #888; padding: 5px 10px; border-radius: 10px;
+      font-size: 0.7rem; cursor: pointer; transition: all 0.2s;
+    }
+    .fraction-btn:hover { border-color: #d4af37; color: #d4af37; }
+    .add-btn {
+      background: transparent; color: #d4af37;
+      border: 1px dashed #d4af37; padding: 12px 30px;
+      border-radius: 50px; font-weight: bold; margin: 10px 0 40px; cursor: pointer;
+    }
+    .add-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .sub-note {
+      max-width: 360px; margin: 8px auto 0; text-align: left;
+      font-size: 0.68rem; color: #777; line-height: 1.5;
+    }
+    .dilution-card {
+      max-width: 370px; margin: 18px auto 8px; padding: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(212, 175, 55, 0.14);
+      border-radius: 24px;
+    }
+    .mini-grid {
+      max-width: 360px; margin: 8px auto 0; text-align: left;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px;
+      font-size: 0.72rem; color: #a7a7a7; line-height: 1.45;
+    }
+    .mini-grid strong { color: #e9d7a0; font-weight: 600; }
+
+    .result-card {
+      background: rgba(10, 8, 5, 0.95);
+      border-top: 1px solid rgba(212, 175, 55, 0.4);
+      padding: 20px; position: fixed; bottom: 0; left: 0; right: 0;
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 1000;
+    }
+    .res-main { font-size: 2.2rem; font-weight: 800; color: #d4af37; line-height: 1; }
+    .res-sub { font-size: 0.75rem; color: #888; margin-top: 8px; }
+
+    footer {
+      margin-top: 40px; padding-bottom: 50px;
+      font-size: 0.6rem; color: #444; text-align: center;
+    }
+    .tool-screen footer { padding-bottom: 140px; }
+
+    /* アニメーション */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tool-screen.active { animation: fadeIn 0.3s ease; }
+  </style>
+</head>
+<body>
+
+  <!-- メニュー画面 -->
+  <div id="menu-screen" class="menu-screen">
+    <header class="nav-header">
+      <a href="https://amber-tools-hub.vercel.app" class="back-btn">🏛 HUB</a>
+    </header>
+
+    <h1 class="main-title">LIQUID PROOF</h1>
+
+    <div class="menu-list">
+      <div class="menu-item" onclick="showScreen('converter')">
+        <div class="menu-item-left">
+          <span class="menu-icon">🥃</span>
+          <div class="menu-text">
+            <h3>Proof Converter</h3>
+            <p>ABV ⇄ US/UK Proof</p>
+          </div>
+        </div>
+        <span class="menu-arrow">›</span>
+      </div>
+
+      <div class="menu-item" onclick="showScreen('volume')">
+        <div class="menu-item-left">
+          <span class="menu-icon">🧪</span>
+          <div class="menu-text">
+            <h3>Volume Converter</h3>
+            <p>ML ⇄ US/UK オンス換算</p>
+          </div>
+        </div>
+        <span class="menu-arrow">›</span>
+      </div>
+
+      <div class="menu-item" onclick="showScreen('cocktail')">
+        <div class="menu-item-left">
+          <span class="menu-icon">🍸</span>
+          <div class="menu-text">
+            <h3>Cocktail Calculator</h3>
+            <p>カクテルのアルコール度数を計算</p>
+          </div>
+        </div>
+        <span class="menu-arrow">›</span>
+      </div>
+
+      <div class="menu-item" onclick="showScreen('temperature')">
+        <div class="menu-item-left">
+          <span class="menu-icon">🌡️</span>
+          <div class="menu-text">
+            <h3>Temperature</h3>
+            <p>摂氏 ⇄ 華氏 ⇄ ケルビン</p>
+          </div>
+        </div>
+        <span class="menu-arrow">›</span>
+      </div>
+    </div>
+
+    <footer>© AMBER PALETTE — ALL-IN-ONE</footer>
+  </div>
+
+  <!-- Proof Converter 画面 -->
+  <div id="converter-screen" class="tool-screen">
+    <button class="screen-back" onclick="showScreen('menu')">← メニューに戻る</button>
+
+    <h2>Alcohol Strength ⇄ Proof</h2>
+    <div class="input-group">
+      <div class="label-box">ABV %</div>
+      <button class="ctrl" onpointerdown="startPress('alcohol', -0.1, syncProof)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">−</button>
+      <input type="number" inputmode="decimal" min="0" id="alcohol" value="43.0" oninput="syncProof('alcohol')">
+      <button class="ctrl" onpointerdown="startPress('alcohol', 0.1, syncProof)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">＋</button>
+    </div>
+    <div class="input-group">
+      <div class="label-box">US PROOF</div>
+      <button class="ctrl" onpointerdown="startPress('usproof', -0.1, syncProof)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">−</button>
+      <input type="number" inputmode="decimal" min="0" id="usproof" value="86.0" oninput="syncProof('usproof')">
+      <button class="ctrl" onpointerdown="startPress('usproof', 0.1, syncProof)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">＋</button>
+    </div>
+    <div class="input-group">
+      <div class="label-box">UK PROOF</div>
+      <button class="ctrl" onpointerdown="startPress('britproof', -0.1, syncProof)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">−</button>
+      <input type="number" inputmode="decimal" min="0" id="britproof" value="75.25" oninput="syncProof('britproof')">
+      <button class="ctrl" onpointerdown="startPress('britproof', 0.1, syncProof)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">＋</button>
+    </div>
+
+    <footer>© AMBER PALETTE — CONVERTER</footer>
+  </div>
+
+  <!-- Volume Converter 画面 -->
+  <div id="volume-screen" class="tool-screen">
+    <button class="screen-back" onclick="showScreen('menu')">← メニューに戻る</button>
+
+    <h2>Unit Converter</h2>
+    <div class="input-group">
+      <div class="label-box">ML</div>
+      <button class="ctrl" onpointerdown="startPress('ml', -1, syncVol)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">−</button>
+      <input type="number" inputmode="decimal" min="0" id="ml" value="30.0" oninput="syncVol('ml')">
+      <button class="ctrl" onpointerdown="startPress('ml', 1, syncVol)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">＋</button>
+    </div>
+    <div class="input-group">
+      <div class="label-box">US OZ</div>
+      <button class="ctrl" onpointerdown="startPress('us', -0.1, syncVol)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">−</button>
+      <input type="number" inputmode="decimal" min="0" id="us" value="1.01" oninput="syncVol('us')">
+      <button class="ctrl" onpointerdown="startPress('us', 0.1, syncVol)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">＋</button>
+    </div>
+    <div class="input-group">
+      <div class="label-box">UK OZ</div>
+      <button class="ctrl" onpointerdown="startPress('uk', -0.1, syncVol)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">−</button>
+      <input type="number" inputmode="decimal" min="0" id="uk" value="1.06" oninput="syncVol('uk')">
+      <button class="ctrl" onpointerdown="startPress('uk', 0.1, syncVol)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">＋</button>
+    </div>
+
+    <footer>© AMBER PALETTE — VOLUME</footer>
+  </div>
+
+  <!-- Temperature 画面 -->
+  <div id="temperature-screen" class="tool-screen">
+    <button class="screen-back" onclick="showScreen('menu')">← メニューに戻る</button>
+
+    <h2>Temperature</h2>
+    <div class="input-group">
+      <div class="label-box">CELSIUS (°C)</div>
+      <button class="ctrl" onpointerdown="startPress('celsius', -0.5, syncTemp)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">−</button>
+      <input type="number" inputmode="decimal" id="celsius" value="25.0" oninput="syncTemp('celsius')">
+      <button class="ctrl" onpointerdown="startPress('celsius', 0.5, syncTemp)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">＋</button>
+    </div>
+    <div class="input-group">
+      <div class="label-box">FAHR (°F)</div>
+      <button class="ctrl" onpointerdown="startPress('fahrenheit', -0.5, syncTemp)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">−</button>
+      <input type="number" inputmode="decimal" id="fahrenheit" value="77.0" oninput="syncTemp('fahrenheit')">
+      <button class="ctrl" onpointerdown="startPress('fahrenheit', 0.5, syncTemp)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">＋</button>
+    </div>
+    <div class="input-group">
+      <div class="label-box">KELVIN (K)</div>
+      <button class="ctrl" onpointerdown="startPress('kelvin', -0.5, syncTemp)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">−</button>
+      <input type="number" inputmode="decimal" min="0" id="kelvin" value="298.2" oninput="syncTemp('kelvin')">
+      <button class="ctrl" onpointerdown="startPress('kelvin', 0.5, syncTemp)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">＋</button>
+    </div>
+
+    <footer>© AMBER PALETTE — TEMPERATURE</footer>
+  </div>
+
+  <!-- Cocktail Calculator 画面 -->
+  <div id="cocktail-screen" class="tool-screen">
+    <button class="screen-back" onclick="showScreen('menu')">← メニューに戻る</button>
+
+    <h2>Cocktail Strength</h2>
+    <div id="ingredient-container"></div>
+    <button id="add-btn" class="add-btn" onclick="addIngredient()">＋ ADD INGREDIENT</button>
+    <div class="sub-note">Quick buttons use exact US fl oz values: 1/2oz = 14.79ml / 1oz = 29.57ml / 1.5oz = 44.36ml</div>
+
+    <div class="dilution-card">
+      <div class="input-group">
+        <div class="label-box">WATER ML</div>
+        <button class="ctrl" onpointerdown="startPress('dilution', -1, calcAlc)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">−</button>
+        <input type="number" inputmode="decimal" min="0" id="dilution" value="0" oninput="calcAlc()">
+        <button class="ctrl" onpointerdown="startPress('dilution', 1, calcAlc)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">＋</button>
+      </div>
+      <div class="quick-row">
+        <button class="fraction-btn" onclick="setDilution(0)">0ml</button>
+        <button class="fraction-btn" onclick="setDilution(5)">+5ml</button>
+        <button class="fraction-btn" onclick="setDilution(10)">+10ml</button>
+        <button class="fraction-btn" onclick="setDilution(15)">+15ml</button>
+        <button class="fraction-btn" onclick="setDilution(20)">+20ml</button>
+      </div>
+      <div class="quick-row">
+        <button class="fraction-btn" onclick="setDilution(20)">Stirred</button>
+        <button class="fraction-btn" onclick="setDilution(30)">Shaken</button>
+      </div>
+      <div class="sub-note">Ice melt / water added is treated as dilution water. “Stirred” and “Shaken” are practical presets.</div>
+    </div>
+
+    <div class="result-card">
+      <div class="res-sub">FINAL MIX STRENGTH</div>
+      <div class="res-main" id="resABV">0.0%</div>
+      <div class="res-sub" id="resTotal">0 ML / 0.00 US OZ</div>
+      <div class="mini-grid">
+        <div><strong>Pre-dilution ABV</strong><br><span id="resPreABV">0.0%</span></div>
+        <div><strong>Pure alcohol</strong><br><span id="resPure">0.00 ML</span></div>
+        <div><strong>Ingredients</strong><br><span id="resIngredients">0.00 ML</span></div>
+        <div><strong>Water added</strong><br><span id="resWater">0.00 ML</span></div>
+      </div>
+    </div>
+
+    <footer>© AMBER PALETTE — COCKTAIL</footer>
+  </div>
+
+  <script>
+    // 画面切り替え
+    function showScreen(screen) {
+      document.getElementById('menu-screen').style.display = 'none';
+      document.getElementById('converter-screen').classList.remove('active');
+      document.getElementById('volume-screen').classList.remove('active');
+      document.getElementById('cocktail-screen').classList.remove('active');
+      document.getElementById('temperature-screen').classList.remove('active');
+
+      if (screen === 'menu') {
+        document.getElementById('menu-screen').style.display = 'block';
+      } else if (screen === 'converter') {
+        document.getElementById('converter-screen').classList.add('active');
+      } else if (screen === 'volume') {
+        document.getElementById('volume-screen').classList.add('active');
+      } else if (screen === 'cocktail') {
+        document.getElementById('cocktail-screen').classList.add('active');
+        if (document.querySelectorAll('.ingredient-block').length === 0) {
+          addIngredient();
+          addIngredient();
+        }
+      } else if (screen === 'temperature') {
+        document.getElementById('temperature-screen').classList.add('active');
+      }
+    }
+
+    // 長押し連続操作
+    let pressTimer, pressInterval;
+    function startPress(id, delta, callback) {
+      updateValue(id, delta, callback);
+      pressTimer = setTimeout(() => {
+        pressInterval = setInterval(() => updateValue(id, delta, callback), 80);
+      }, 500);
+    }
+    function stopPress() {
+      clearTimeout(pressTimer);
+      clearInterval(pressInterval);
+    }
+
+    function clampValue(id, value) {
+      if (['alcohol', 'usproof', 'britproof', 'ml', 'us', 'uk', 'kelvin', 'dilution'].includes(id)) {
+        return Math.max(0, value);
+      }
+      return value;
+    }
+
+    function sanitizeNumberInput(id, fallback = 0) {
+      const el = document.getElementById(id);
+      if (!el) return fallback;
+      let val = parseFloat(el.value);
+      if (!Number.isFinite(val)) val = fallback;
+      val = clampValue(id, val);
+      el.value = String(val);
+      return val;
+    }
+
+    function updateValue(id, delta, callback) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let val = sanitizeNumberInput(id, 0);
+      const decimals = (id === 'britproof' || id === 'kelvin' || id === 'us' || id === 'uk') ? 2 : 1;
+      el.value = clampValue(id, val + delta).toFixed(decimals);
+      callback(id);
+    }
+
+    // Proof換算
+    function syncProof(id) {
+      const alc = document.getElementById('alcohol');
+      const us = document.getElementById('usproof');
+      const brit = document.getElementById('britproof');
+      let val = sanitizeNumberInput(id, 0);
+
+      if (id === 'alcohol') {
+        us.value = (val * 2).toFixed(1);
+        brit.value = (val * 1.75).toFixed(2);
+      } else if (id === 'usproof') {
+        alc.value = (val / 2).toFixed(1);
+        brit.value = (val * 0.875).toFixed(2);
+      } else {
+        alc.value = (val / 1.75).toFixed(1);
+        us.value = (val / 0.875).toFixed(1);
+      }
+    }
+
+    // 温度換算
+    function syncTemp(id) {
+      const c = document.getElementById('celsius');
+      const f = document.getElementById('fahrenheit');
+      const k = document.getElementById('kelvin');
+      let val = sanitizeNumberInput(id, id === 'kelvin' ? 273.15 : 0);
+      let celsius;
+
+      if (id === 'celsius') celsius = val;
+      else if (id === 'fahrenheit') celsius = (val - 32) * 5 / 9;
+      else if (id === 'kelvin') celsius = Math.max(0, val) - 273.15;
+
+      const kelvin = Math.max(0, celsius + 273.15);
+      if (id !== 'celsius') c.value = celsius.toFixed(1);
+      if (id !== 'fahrenheit') f.value = (celsius * 9 / 5 + 32).toFixed(1);
+      if (id !== 'kelvin') k.value = kelvin.toFixed(2);
+      else k.value = kelvin.toFixed(2);
+    }
+
+    // 容量換算
+    const RATIO_US = 29.5735;
+    const RATIO_UK = 28.4131;
+    function syncVol(sourceId) {
+      const mlEl = document.getElementById('ml');
+      const usEl = document.getElementById('us');
+      const ukEl = document.getElementById('uk');
+      let currentML = 0;
+
+      if (sourceId === 'ml') currentML = sanitizeNumberInput('ml', 0);
+      else if (sourceId === 'us') currentML = sanitizeNumberInput('us', 0) * RATIO_US;
+      else if (sourceId === 'uk') currentML = sanitizeNumberInput('uk', 0) * RATIO_UK;
+
+      currentML = Math.max(0, currentML);
+
+      if (sourceId !== 'ml') mlEl.value = currentML.toFixed(1);
+      if (sourceId !== 'us') usEl.value = (currentML / RATIO_US).toFixed(2);
+      if (sourceId !== 'uk') ukEl.value = (currentML / RATIO_UK).toFixed(2);
+    }
+
+    // カクテル計算
+    let ingredientCount = 0;
+    function addIngredient() {
+      if (document.querySelectorAll('.ingredient-block').length >= 4) return;
+      ingredientCount++;
+      const container = document.getElementById('ingredient-container');
+      const div = document.createElement('div');
+      div.className = 'ingredient-block';
+      div.id = `block-${ingredientCount}`;
+      const currentBlocks = document.querySelectorAll('.ingredient-block').length;
+      const isFirst = currentBlocks === 0;
+      div.innerHTML = `
+        <button class="remove-btn" onclick="removeIngredient(${ingredientCount})">✕</button>
+        <div class="input-group">
+          <div class="label-box">ABV %</div>
+          <button class="ctrl" onpointerdown="startPressCocktail('abv${ingredientCount}', -0.5)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">−</button>
+          <input type="number" inputmode="decimal" min="0" id="abv${ingredientCount}" value="${isFirst ? 40 : 0}" oninput="calcAlc()">
+          <button class="ctrl" onpointerdown="startPressCocktail('abv${ingredientCount}', 0.5)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">＋</button>
+        </div>
+        <div class="input-group">
+          <div class="label-box">VOL ML</div>
+          <button class="ctrl" onpointerdown="startPressCocktail('vol${ingredientCount}', -5)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">−</button>
+          <input type="number" inputmode="decimal" min="0" id="vol${ingredientCount}" value="${isFirst ? 45 : 0}" oninput="calcAlc()">
+          <button class="ctrl" onpointerdown="startPressCocktail('vol${ingredientCount}', 5)" onpointerup="stopPress()" onpointerleave="stopPress()" onpointercancel="stopPress()">＋</button>
+        </div>
+        <div class="quick-row">
+          <button class="fraction-btn" onclick="setVolDirect('vol${ingredientCount}', 14.79)">1/2oz</button>
+          <button class="fraction-btn" onclick="setVolDirect('vol${ingredientCount}', 29.57)">1oz</button>
+          <button class="fraction-btn" onclick="setVolDirect('vol${ingredientCount}', 44.36)">1.5oz</button>
+        </div>`;
+      container.appendChild(div);
+      checkAddBtn();
+      calcAlc();
+    }
+
+    function removeIngredient(id) {
+      document.getElementById(`block-${id}`).remove();
+      calcAlc();
+      checkAddBtn();
+    }
+
+    function checkAddBtn() {
+      document.getElementById('add-btn').disabled = (document.querySelectorAll('.ingredient-block').length >= 4);
+    }
+
+    function startPressCocktail(id, delta) {
+      stepAlc(id, delta);
+      pressTimer = setTimeout(() => {
+        pressInterval = setInterval(() => stepAlc(id, delta), 80);
+      }, 500);
+    }
+
+    function stepAlc(id, delta) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let val = parseFloat(el.value);
+      if (!Number.isFinite(val)) val = 0;
+      el.value = Math.max(0, val + delta).toFixed(id.includes('abv') ? 1 : (id.includes('vol') ? 2 : 0));
+      calcAlc();
+    }
+
+    function setVolDirect(id, val) {
+      document.getElementById(id).value = Number(val).toFixed(2);
+      calcAlc();
+    }
+
+    function setDilution(val) {
+      const el = document.getElementById('dilution');
+      if (!el) return;
+      el.value = Math.max(0, Number(val) || 0).toFixed(2);
+      calcAlc();
+    }
+
+    function calcAlc() {
+      let ingredientsVol = 0, totalPure = 0;
+      document.querySelectorAll('input[id^="abv"]').forEach((el, i) => {
+        const abv = Math.max(0, parseFloat(el.value) || 0);
+        el.value = abv;
+        const volInputs = document.querySelectorAll('input[id^="vol"]');
+        const vol = Math.max(0, parseFloat(volInputs[i]?.value) || 0);
+        if (volInputs[i]) volInputs[i].value = vol;
+        ingredientsVol += vol;
+        totalPure += (abv * vol) / 100;
+      });
+
+      const dilutionEl = document.getElementById('dilution');
+      let dilution = 0;
+      if (dilutionEl) {
+        dilution = Math.max(0, parseFloat(dilutionEl.value) || 0);
+        dilutionEl.value = dilution;
+      }
+
+      const totalVol = ingredientsVol + dilution;
+      const preDilutionAbv = ingredientsVol ? (totalPure / ingredientsVol * 100) : 0;
+      const finalAbv = totalVol ? (totalPure / totalVol * 100) : 0;
+
+      document.getElementById('resABV').textContent = finalAbv.toFixed(1) + "%";
+      document.getElementById('resTotal').textContent = totalVol ? `${totalVol.toFixed(2)} ML / ${(totalVol / RATIO_US).toFixed(2)} US OZ` : "0 ML / 0.00 US OZ";
+      document.getElementById('resPreABV').textContent = preDilutionAbv.toFixed(1) + "%";
+      document.getElementById('resPure').textContent = `${totalPure.toFixed(2)} ML`;
+      document.getElementById('resIngredients').textContent = `${ingredientsVol.toFixed(2)} ML`;
+      document.getElementById('resWater').textContent = `${dilution.toFixed(2)} ML`;
+    }
+  </script>
+</body>
+</html>

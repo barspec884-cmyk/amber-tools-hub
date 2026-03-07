@@ -1,0 +1,246 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>Whisky Coloring — Amber Palette</title>
+
+<style>
+:root { --amber-deep: #1a0a02; }
+html, body {
+  height: 100%; margin: 0; font-family:'Noto Sans JP', sans-serif;
+  color: #fff; text-align: center; overflow: hidden;
+  background: #000; transition: background 1s ease, opacity 0.8s ease;
+}
+
+/* 初期の琥珀色アニメーション */
+.glow-bg {
+  background: radial-gradient(circle at center,#5a2b08 0%,#2b1a09 70%,#100502 100%);
+  animation: glowShift 24s ease-in-out infinite;
+}
+
+body.fade-exit { background: var(--amber-deep) !important; opacity: 0; }
+
+@keyframes glowShift {
+  0%{background-color:#1a0a04} 25%{background-color:#8c4b08} 50%{background-color:#e0a240} 75%{background-color:#9c3c06} 100%{background-color:#1a0a04}
+}
+
+/* 21段階パレット：鑑賞モード */
+#amberVerticalBar {
+  position: fixed; inset: 0; display: flex; flex-direction: column;
+  z-index: 1000; transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+#amberVerticalBar.compact { transform: translateX(calc(-100% + 24px)); }
+#amberVerticalBar .segment { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+#amberVerticalBar .segment span { font-size: .75rem; color: #fff; mix-blend-mode: difference; opacity: 0.6; }
+
+/* ふわっと出るボタンパネル */
+#controlPanel {
+  position: fixed; bottom: 60px; left: 50%; transform: translate(-50%, 10px);
+  display: flex; flex-direction: column; gap: 16px; width: 80%; max-width: 280px; 
+  z-index: 9000; opacity: 0; pointer-events: none;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+#controlPanel.show { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+
+button { 
+  font-size: 1.1rem; padding: 18px; border: none; border-radius: 50px; 
+  color: #fff; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
+  backdrop-filter: blur(15px); background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+#mainBtn { background: linear-gradient(135deg, rgba(212,167,96,0.9), rgba(184,121,0,0.9)); border: none; }
+button:active { transform: scale(0.96); }
+
+#resultBar {
+  position: fixed; top: 32px; left: 50%; transform: translateX(-50%); width: 82%;
+  padding: 20px; background: rgba(0,0,0,0.7); color: #fff; z-index: 9500;
+  border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+  opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+}
+#resultBar.show { opacity: 1; pointer-events: auto; }
+
+/* ビデオ：フラッシュ演出用のフィルタ */
+#video { 
+  position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; 
+  opacity: 0; transition: opacity 0.8s, filter 0.1s ease; z-index: 1; 
+}
+#video.active { opacity: 1; }
+
+#target {
+  position:fixed; top:50%; left:50%; width:80px; height:80px; border-radius:50%;
+  transform:translate(-50%,-50%); z-index:998; pointer-events:none;
+  border: 1px solid rgba(255,255,255,0.3); opacity:0; transition:opacity 0.8s;
+}
+#target.active { opacity:1; }
+
+#measuringOverlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000;
+  display: flex; justify-content: center; flex-direction: column; align-items: center;
+  color: #ffd89e; opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+#measuringOverlay.show { opacity: 1; }
+#progressBar { width: 60%; height: 3px; background: rgba(255,255,255,0.1); margin-top: 15px; border-radius: 3px; overflow: hidden; }
+#progressFill { height: 100%; width: 0%; background: #d4a760; transition: width 0.1s; }
+#glass { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 140px; opacity: 0.5; z-index: 500; pointer-events: none; }
+</style>
+</head>
+<body class="glow-bg" onclick="toggleUI()">
+
+<div id="amberVerticalBar">
+  <div class="segment" style="background:#fffef5;"><span>Gin Clear</span></div>
+  <div class="segment" style="background:#fffedc;"><span>Very Pale</span></div>
+  <div class="segment" style="background:#feee98;"><span>Pale Yellow</span></div>
+  <div class="segment" style="background:#fbea78;"><span>White Wine</span></div>
+  <div class="segment" style="background:#fbe166;"><span>Pale Straw</span></div>
+  <div class="segment" style="background:#f7dc55;"><span>Straw Gold</span></div>
+  <div class="segment" style="background:#f8d848;"><span>Pale Gold</span></div>
+  <div class="segment" style="background:#E2C355;"><span>Light Gold</span></div>
+  <div class="segment" style="background:#DDB53B;"><span>Golden</span></div>
+  <div class="segment" style="background:#D6A42E;"><span>Old Gold</span></div>
+  <div class="segment" style="background:#D19522;"><span>Deep Gold</span></div>
+  <div class="segment" style="background:#C8841A;"><span>Gold Amber</span></div>
+  <div class="segment" style="background:#BF7412;"><span>Sherry</span></div>
+  <div class="segment" style="background:#B5640A;"><span>Amber</span></div>
+  <div class="segment" style="background:#A35408;"><span>Dark Amber</span></div>
+  <div class="segment" style="background:#91430F;"><span>Copper Tone</span></div>
+  <div class="segment" style="background:#7D320E;"><span>Mahogany</span></div>
+  <div class="segment" style="background:#6B2610;"><span>Reddish Brown</span></div>
+  <div class="segment" style="background:#591B0D;"><span>Chestnut</span></div>
+  <div class="segment" style="background:#46130C;"><span>Brown Sherry</span></div>
+  <div class="segment" style="background:#2D0A05;"><span>Deep Mahogany</span></div>
+</div>
+
+<video id="video" autoplay muted playsinline></video>
+<canvas id="canvas" style="display:none;"></canvas>
+<div id="target"></div>
+<img id="glass" src="glass.png" alt="Whisky Glass">
+<div id="resultBar"></div>
+<div id="measuringOverlay"><div>分析中...</div><div id="progressBar"><div id="progressFill"></div></div></div>
+
+<div id="controlPanel">
+  <button id="mainBtn" onclick="handleMainAction(event)">📷 判定を始める</button>
+  <button id="subBtn" onclick="handleSubAction(event)">🛑 ハブに戻る</button>
+</div>
+
+<script>
+const video=document.getElementById('video'), canvas=document.getElementById('canvas'), ctx=canvas.getContext('2d');
+const mainBtn=document.getElementById('mainBtn'), subBtn=document.getElementById('subBtn'), result=document.getElementById('resultBar');
+const bar=document.getElementById('amberVerticalBar'), panel=document.getElementById('controlPanel'), overlay=document.getElementById('measuringOverlay'), progressFill=document.getElementById('progressFill');
+
+const HUB_URL = "https://amber-tools-hub.vercel.app/";
+let stream=null;
+
+function toggleUI() {
+  if (overlay.classList.contains("show")) return;
+  panel.classList.toggle('show');
+}
+
+// メインアクションの制御（開始・判定・再試行）
+function handleMainAction(e) {
+  e.stopPropagation();
+  if (!stream) {
+    startCamera();
+  } else if (mainBtn.innerText.includes("もう一度")) {
+    // 【再判定】映像をリスタートし、UIを判定モードに戻す
+    result.classList.remove('show');
+    document.body.style.background = ""; 
+    document.body.classList.add('glow-bg'); 
+    
+    video.play(); // 映像を再開
+    mainBtn.innerText = "🥃 琥珀を判定";
+    subBtn.innerText = "🛑 キャンセル";
+  } else {
+    detectColor();
+  }
+}
+
+function handleSubAction(e) {
+  e.stopPropagation();
+  if (subBtn.innerText.includes("キャンセル")) stopCamera();
+  else exitToHub();
+}
+
+async function startCamera(){
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    video.srcObject = stream; video.play(); video.classList.add('active');
+    document.getElementById('target').classList.add('active');
+    bar.classList.add('compact');
+    mainBtn.innerText = "🥃 琥珀を判定"; subBtn.innerText = "🛑 キャンセル";
+  } catch(e) { alert('カメラを起動できません'); }
+}
+
+function stopCamera(){
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
+  video.classList.remove('active'); document.getElementById('target').classList.remove('active');
+  bar.classList.remove('compact');
+  result.classList.remove('show');
+  document.body.style.background = ""; document.body.classList.add('glow-bg');
+  mainBtn.innerText = "📷 判定を始める"; subBtn.innerText = "🛑 ハブに戻る";
+}
+
+function exitToHub() {
+  document.body.classList.add('fade-exit');
+  setTimeout(() => { location.href = HUB_URL; }, 800);
+}
+
+// 精密判定ロジック
+const AMBER_21=[{name:'Gin Clear',jp:'ジンクリア',hex:'#fffef5'},{name:'Very Pale',jp:'ベリーペール',hex:'#fffedc'},{name:'Pale Yellow',jp:'ペールイエロー',hex:'#feee98'},{name:'White Wine',jp:'ホワイトワイン',hex:'#fbea78'},{name:'Pale Straw',jp:'ペールストロー',hex:'#fbe166'},{name:'Straw Gold',jp:'ストローゴールド',hex:'#f7dc55'},{name:'Pale Gold',jp:'ペールゴールド',hex:'#f8d848'},{name:'Light Gold',jp:'ライトゴールド',hex:'#E2C355'},{name:'Golden',jp:'ゴールデン',hex:'#DDB53B'},{name:'Old Gold',jp:'オールドゴールド',hex:'#D6A42E'},{name:'Deep Gold',jp:'ディープゴールド',hex:'#D19522'},{name:'Gold Amber',jp:'ゴールドアンバー',hex:'#C8841A'},{name:'Sherry',jp:'シェリー',hex:'#BF7412'},{name:'Amber',jp:'アンバー',hex:'#B5640A'},{name:'Dark Amber',jp:'ダークアンバー',hex:'#A35408'},{name:'Copper Tone',jp:'カッパートーン',hex:'#91430F'},{name:'Mahogany',jp:'マホガニー',hex:'#7D320E'},{name:'Reddish Brown',jp:'レディッシュブラウン',hex:'#6B2610'},{name:'Chestnut',jp:'チェスナット',hex:'#591B0D'},{name:'Brown Sherry',jp:'ブラウンシェリー',hex:'#46130C'},{name:'Deep Mahogany',jp:'ディープマホガニー',hex:'#2D0A05'}];
+
+async function detectColor(){
+  if(!stream) return;
+
+  // 【演出】カシャッというフラッシュ効果
+  video.style.filter = "brightness(3)";
+  setTimeout(() => { video.style.filter = "brightness(1)"; }, 100);
+
+  overlay.classList.add("show"); progressFill.style.width="0%";
+  const frames=30, size=40, colors=[];
+  for(let i=0; i<frames; i++){
+    canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+    ctx.drawImage(video,0,0);
+    const data=ctx.getImageData(canvas.width/2-size/2, canvas.height/2-size/2, size, size).data;
+    let r=0,g=0,b=0,c=0;
+    for(let j=0;j<data.length;j+=4){ if(data[j]>10){ r+=data[j]; g+=data[j+1]; b+=data[j+2]; c++; } }
+    if(c>0) colors.push({r:r/c,g:g/c,b:b/c});
+    progressFill.style.width=`${(i/frames)*100}%`;
+    await new Promise(r=>setTimeout(r,40));
+  }
+  
+  overlay.classList.remove("show");
+  
+  // 【重要】判定が終わったら映像を一時停止して固定する
+  video.pause(); 
+
+  if(!colors.length) {
+    video.play();
+    alert("色が検知できませんでした。");
+    return;
+  }
+  const avg={r:colors.reduce((s,x)=>s+x.r,0)/colors.length, g:colors.reduce((s,x)=>s+x.g,0)/colors.length, b:colors.reduce((s,x)=>s+x.b,0)/colors.length};
+  const best=getNearest(avg);
+  
+  result.innerHTML=`<div style="font-size:0.9rem;opacity:0.6;">Detected Color</div><div style="font-size:1.4rem;font-weight:900;">${best.name}</div><div style="font-size:1rem;">（${best.jp}）</div>`;
+  result.classList.add('show');
+  
+  mainBtn.innerText="🔄 もう一度測る"; subBtn.innerText="🏠 終了して戻る";
+  document.body.classList.remove('glow-bg');
+  document.body.style.background=`radial-gradient(circle at center, ${best.hex} 0%, #000 85%)`;
+}
+
+// 色差計算
+function getNearest(rgb){
+  const lab1=rgbToLab(rgb.r,rgb.g,rgb.b); let min=Infinity, best=AMBER_21[0];
+  for(const a of AMBER_21){
+    const r2=hexToRgb(a.hex), lab2=rgbToLab(r2.r,r2.g,r2.b), d=deltaE(lab1,lab2);
+    if(d<min){ min=d; best=a; }
+  }
+  return best;
+}
+function hexToRgb(h){const v=h.match(/\w\w/g).map(x=>parseInt(x,16));return{r:v[0],g:v[1],b:v[2]};}
+function rgbToLab(r,g,b){ r/=255;g/=255;b/=255;r=r>.04045?Math.pow((r+.055)/1.055,2.4):r/12.92;g=g>.04045?Math.pow((g+.055)/1.055,2.4):g/12.92;b=b>.04045?Math.pow((b+.055)/1.055,2.4):b/12.92;const x=(r*.4124+g*.3576+b*.1805)/.95047,y=(r*.2126+g*.7152+b*.0722),z=(r*.0193+g*.1192+b*.9505)/1.08883,f=t=>t>.008856?Math.cbrt(t):7.787*t+16/116;return{L:116*f(y)-16,a:500*(f(x)-f(y)),b:200*(f(y)-f(z))};}
+function deltaE(l1,l2){return Math.sqrt(Math.pow(l1.L-l2.L,2)+Math.pow(l1.a-l2.a,2)+Math.pow(l1.b-l2.b,2));}
+</script>
+</body>
+</html>

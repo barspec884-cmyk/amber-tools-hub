@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Amber Weather — Black Edition</title>
+  <style>
+    /* Black Edition 共通デザイン */
+    :root {
+      --amber: #d4af37;
+      --bg-grad: radial-gradient(circle at center, #1a0f08 0%, #050302 100%);
+      --glass: rgba(255, 255, 255, 0.04);
+    }
+
+    body {
+      margin: 0; padding: 20px;
+      display: flex; flex-direction: column; align-items: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #e0e0e0; background: var(--bg-grad);
+      min-height: 100vh; text-align: center;
+      -webkit-user-select: none; user-select: none;
+    }
+
+    /* ハブに戻るボタン */
+    .nav-header {
+      display: flex; justify-content: flex-start;
+      width: 100%; max-width: 400px; margin-bottom: 20px;
+    }
+    .back-btn {
+      text-decoration: none; color: #888; font-size: 0.75rem; letter-spacing: 1px;
+      display: flex; align-items: center; gap: 5px; background: rgba(255,255,255,0.05);
+      padding: 8px 15px; border-radius: 50px; border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .back-btn:active { background: rgba(212, 175, 55, 0.1); color: var(--amber); }
+
+    h1 {
+      font-size: 1.4rem; letter-spacing: 4px; color: var(--amber);
+      margin: 10px 0 30px; text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .weather-card {
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 24px; padding: 2em;
+      background: var(--glass); backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      width: 100%; max-width: 350px; box-sizing: border-box;
+      transition: all 0.5s ease;
+    }
+
+    /* 検索入力エリア */
+    #manual {
+      margin-top: 30px; display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 350px;
+    }
+    #place {
+      background: rgba(0,0,0,0.4); border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 50px; padding: 12px 20px; color: #fff; font-size: 1rem;
+      outline: none; text-align: center;
+    }
+    #search {
+      background: var(--amber); color: #000; font-weight: bold;
+      border: none; border-radius: 50px; padding: 12px; cursor: pointer;
+    }
+
+    #refresh {
+      margin-top: 20px; background: transparent; color: #888;
+      border: 1px dashed rgba(212, 175, 55, 0.4);
+      padding: 10px 20px; border-radius: 50px; font-size: 0.8rem;
+    }
+
+    footer { margin-top: auto; padding: 30px 0; font-size: 0.6rem; color: #444; }
+  </style>
+</head>
+<body>
+
+  <header class="nav-header">
+    <a href="https://amber-tools-hub.vercel.app" class="back-btn">🏛 HUB</a>
+  </header>
+
+  <h1>AMBER WEATHER</h1>
+
+  <div id="weather" class="weather-card">
+    <p>📡 測位中…</p>
+  </div>
+
+  <div id="manual">
+    <input type="text" id="place" placeholder="地名を入力（例：港区）">
+    <button id="search">SEARCH CITY</button>
+  </div>
+
+  <button id="refresh">🔄 GPS REFRESH</button>
+
+  <footer>© AMBER PALETTE — BLACK EDITION</footer>
+
+<script>
+const cacheKey = "amberWeatherCache";
+const cacheDuration = 6 * 60 * 60 * 1000;
+let watchId = null;
+
+async function getWeather(lat, lon) {
+  const res = await fetch(`/api/weather?lat=${lat}&lon=${lon}`);
+  return await res.json();
+}
+
+async function getAddress(lat, lon) {
+  const res = await fetch(`/api/geocode?lat=${lat}&lon=${lon}`);
+  const data = await res.json();
+  if (data.results && data.results[0]) {
+    const addr = data.results[0].formatted_address.replace(/^日本[,、]?\s*/, "").replace(/〒\d{3}-\d{4}\s*/, "").trim();
+    const match = addr.match(/[都道府県](.+?区|.+?市|.+?郡|.+?町|.+?村)/);
+    return match ? match[1] : addr;
+  }
+  return "不明な場所";
+}
+
+async function getCachedWeather(lat, lon, label = "", acc = 0, force = false) {
+  const now = Date.now();
+  const cached = localStorage.getItem(cacheKey);
+  if (!force && cached) {
+    const data = JSON.parse(cached);
+    if (Math.hypot(lat - data.lat, lon - data.lon) < 0.1 && now - data.time < cacheDuration)
+      return data.weatherHTML;
+  }
+
+  try {
+    const address = label || await getAddress(lat, lon);
+    const w = await getWeather(lat, lon);
+    const desc = w.weather[0].description;
+    const icon = w.weather[0].icon;
+    const temp = w.main.temp.toFixed(1);
+    const hum = w.main.humidity;
+    const press = w.main.pressure;
+
+    // ✅ Black Edition スタイルを維持
+    const html = `
+      <div style="color:#e0e0e0;">
+        <p style="font-size:1.1rem; color:#d4af37; margin-bottom:15px;">📍 ${address}</p>
+        <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="${desc}" width="80" 
+             style="filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));">
+        <p style="font-size:1.2rem; font-weight:bold; margin:10px 0;">${desc}</p>
+        <p style="font-size:1.4rem; color:#fff;">🌡️ ${temp}℃</p>
+        <p style="font-size:0.9rem; color:#888;">💧 ${hum}%　⏱️ ${press}hPa</p>
+        ${acc ? `<p style="font-size:0.6rem; color:#444; margin-top:15px;">精度 ±${acc}m</p>` : ""}
+      </div>
+    `;
+
+    localStorage.setItem(cacheKey, JSON.stringify({ lat, lon, time: now, weatherHTML: html }));
+    return html;
+  } catch (err) {
+    return `<p>取得失敗 (${err.message})</p>`;
+  }
+}
+
+async function initLocation(force = false) {
+  const weatherEl = document.getElementById("weather");
+  const cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    const data = JSON.parse(cached);
+    weatherEl.innerHTML = data.weatherHTML + `<p style="color:#444;font-size:0.6rem;margin-top:10px;">(CACHED DATA)</p>`;
+  } else {
+    weatherEl.innerHTML = "<p>📡 測位中…</p>";
+  }
+
+  if (!navigator.geolocation) return weatherEl.innerHTML += "<p>GPS非対応</p>";
+
+  let bestPos = null;
+  const finalize = async () => {
+    if (watchId) navigator.geolocation.clearWatch(watchId);
+    if (!bestPos) return;
+    weatherEl.innerHTML = await getCachedWeather(bestPos.coords.latitude, bestPos.coords.longitude, "", Math.round(bestPos.coords.accuracy), force);
+  };
+
+  watchId = navigator.geolocation.watchPosition(
+    pos => {
+      if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy) bestPos = pos;
+      if (bestPos.coords.accuracy < 150) finalize();
+    },
+    err => { console.warn("GPS失敗:", err); },
+    { enableHighAccuracy: false, timeout: 10000, maximumAge: 30000 }
+  );
+  setTimeout(finalize, 5000);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initLocation();
+  document.getElementById("refresh").addEventListener("click", () => initLocation(true));
+  document.getElementById("search").addEventListener("click", async () => {
+    const place = document.getElementById("place").value.trim();
+    if (!place) return alert("地名を入力してください。");
+    try {
+      const res = await fetch(`/api/geocode?place=${encodeURIComponent(place)}`);
+      const data = await res.json();
+      if (!data.results?.[0]) throw new Error("地名が見つかりません");
+      const loc = data.results[0].geometry.location;
+      document.getElementById("weather").innerHTML = await getCachedWeather(loc.lat, loc.lng, place, 0, true);
+    } catch (err) { alert("検索エラー：" + err.message); }
+  });
+});
+</script>
+</body>
+</html>
