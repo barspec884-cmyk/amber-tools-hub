@@ -1,7 +1,0 @@
-{
-  "name": "app-only-static-site",
-  "private": true,
-  "dependencies": {
-    "@vercel/functions": "^1.0.0"
-  }
-}
